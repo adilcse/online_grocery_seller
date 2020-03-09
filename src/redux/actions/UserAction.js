@@ -1,6 +1,6 @@
 import { LOGOUT_USER_PENDING, LOGOUT_USER_SUCCESS,LOGOUT_USER_FAILED, LOGIN_USER_PENDING, LOGIN_USER_FAILED, LOGIN_USER_SUCCESS, REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, REGISTER_USER_PENDING } from "../../app/ActionConstant";
 import {firebase, db } from '../../firebaseConnect';
-import { USER_TYPE_SELLER } from "../../app/AppConstant";
+import { USER_TYPE_SELLER, SELLER_VERIFICATION_PENDING } from "../../app/AppConstant";
 /**
  * Tries to signin with given email and password
  * if verifies logsin the user
@@ -49,13 +49,16 @@ export const GoogleLogin=(dispatch)=>{
  * @param {*} email email id of the user
  * @param {*} password password to set
  */
-export const Register =(name,email,password)=>dispatch=>{
+export const Register =(dispatch,name,email,password,address)=>{
 dispatch({type:REGISTER_USER_PENDING});
 firebase.auth().createUserWithEmailAndPassword(email, password)
 .then((data)=>{
-  addUserToDb(dispatch,data.user.uid,data.user.email,name);
+  addUserToDb(dispatch,data.user.uid,data.user.email,name,address);
 })
 .catch(function(error) {
+  if(error.code==='auth/email-already-in-use'){
+
+  }
   console.log(error);
   dispatch({type:REGISTER_USER_FAILED,payload:{...error}});
   // ...
@@ -113,11 +116,16 @@ export const ValidateUser=(dispatch,user,by='email')=>{
     console.log("Error getting document:", error);
 });
 }
-const addUserToDb=(dispatch,userId,email,name)=>{
+const addUserToDb=(dispatch,userId,email,name,address)=>{
   db.collection("seller").doc(userId).set({
     email: email,
     name:name,
-    userType:USER_TYPE_SELLER
+    userType:SELLER_VERIFICATION_PENDING,
+    id:userId,
+    dateOfJoining:firebase.firestore.FieldValue.serverTimestamp(),
+    address:address.formatted_address,
+    latLng:new firebase.firestore.GeoPoint(address.latLng.latitude,address.latLng.longitude)
+
 })
 .then(function() {
    dispatch({type:REGISTER_USER_SUCCESS,payload:{uid:userId,email:email}});

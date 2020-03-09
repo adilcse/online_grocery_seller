@@ -4,14 +4,17 @@ import {FaPlus} from 'react-icons/fa';
 import {NavLink} from 'react-router-dom';
 
 import { Button } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { Logout } from '../../redux/actions/UserAction';
 
 const SellerNav = ()=>{
     const user=useSelector(state=>state.userLogin);
+    const dispatch=useDispatch();
+    
 const LogoutButton=()=>{
     return (
-    <NavLink to='/seller/logout' className='nav-item ml-auto mr-2'>
-        <Button>Logout</Button>
+    <NavLink to='/' className='nav-item ml-auto mr-2'>
+        <Button onClick={()=>Logout(dispatch)}>Logout</Button>
     </NavLink>
      )
 }
@@ -34,13 +37,13 @@ const LogoutButton=()=>{
     <ul className="navbar-nav w-100 ">
      
       <li className="nav-item">
-        <NavLink className="nav-link" to="/seller/dashbord">Dashbord <IoIosHome/></NavLink>
+        <NavLink className="nav-link" to="/home">Dashbord <IoIosHome/></NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className="nav-link" to="/seller/orders">Orders<IoIosList/></NavLink>
+        <NavLink className="nav-link" to="/orders">Orders<IoIosList/></NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className="nav-link" to="/seller/additem">Add Item <FaPlus/></NavLink>
+        <NavLink className="nav-link" to="/additem">Add Item <FaPlus/></NavLink>
       </li>
       <li className="nav-item align-self-center">
         <h5>Welcome {user.name}</h5>
