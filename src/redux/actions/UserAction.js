@@ -1,6 +1,6 @@
-import { LOGOUT_USER_PENDING, LOGOUT_USER_SUCCESS,LOGOUT_USER_FAILED, LOGIN_USER_PENDING, LOGIN_USER_FAILED, LOGIN_USER_SUCCESS, REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, REGISTER_USER_PENDING } from "../../app/ActionConstant";
+import { LOGOUT_USER_PENDING, LOGOUT_USER_SUCCESS,LOGOUT_USER_FAILED, LOGIN_USER_PENDING, LOGIN_USER_FAILED, LOGIN_USER_SUCCESS, REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, REGISTER_USER_PENDING, PLEASE_REGISTER_FIRST } from "../../app/ActionConstant";
 import {firebase, db } from '../../firebaseConnect';
-import { USER_TYPE_SELLER, SELLER_VERIFICATION_PENDING } from "../../app/AppConstant";
+import {  SELLER_VERIFICATION_PENDING } from "../../app/AppConstant";
 /**
  * Tries to signin with given email and password
  * if verifies logsin the user
@@ -8,7 +8,7 @@ import { USER_TYPE_SELLER, SELLER_VERIFICATION_PENDING } from "../../app/AppCons
  * @param {'test@test.com'} email email for user login
  * @param {'*******'} password user's pasword
  */
-let token=null;
+
 export const EmailLogin=(dispatch,email,password)=>{
     console.log("action",email, password);
     dispatch({ type: LOGIN_USER_PENDING});
@@ -28,21 +28,6 @@ export const EmailLogin=(dispatch,email,password)=>{
  * if user's exist it
  * @param {*} dispatch dispatch hook
  */
-export const GoogleLogin=(dispatch)=>{
-  let provider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithPopup(provider).then(function(result) {
-    // This gives you a Google Access Token. You can use it to access the Google API.
-     token = result.credential.accessToken;
-    
-    // The signed-in user info.
-    var user = result.user;
-    ValidateUser(dispatch,user,'google');
-    // ...
-  }).catch(function(error) {
-  console.log(error)
-    // ...
-  });
-}
 /**
  * user register with firebase auth and add data to firebase database
  * @param {*} name name of the user
@@ -81,11 +66,7 @@ export const LoginStatus=(dispatch)=>{
   dispatch({ type: LOGIN_USER_PENDING});
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-      
-     if(!token)
         ValidateUser(dispatch,user);
-     
-
     } else {
       // No user is signed in.
       dispatch({type:LOGIN_USER_FAILED})
@@ -98,18 +79,14 @@ export const ValidateUser=(dispatch,user,by='email')=>{
   db.collection("seller").doc(user.uid).get().then(function(doc) {
     if (doc.exists) {
       dispatch({type:LOGIN_USER_SUCCESS,payload:{...user,...doc.data()}});
-      token=null;
       
     } else {
         // doc.data() will be undefined in this case
         console.log("use not exist...");
-        if(by==='google'){
-         
-          addUserToDb(dispatch,user.uid,user.email,user.displayName);
-        }else{
+       
           dispatch({type:LOGIN_USER_FAILED,payload:{code:'user not exist'}});
           Logout(dispatch);
-        }
+        
 
     }
 }).catch(function(error) {
@@ -134,5 +111,5 @@ const addUserToDb=(dispatch,userId,email,name,address)=>{
 .catch(function(error) {
     console.error("Error writing document: ", error);
     dispatch({type:REGISTER_USER_FAILED,payload:error})
-}).finally(()=>token=null);
+})
 }

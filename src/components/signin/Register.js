@@ -10,6 +10,7 @@ const Register = (props)=>{
    const dispatch=useDispatch();
    const user=useSelector(state=>state.userLogin);
    const [address,setAddress]=useState(props.address);
+
    //validate data
       const validateField=(data)=>{
          if(data.value.length<4){
@@ -91,7 +92,7 @@ const Register = (props)=>{
                         <form>
                            <div className="form-group">
                               <label htmlFor="firstname">Name</label>
-                              <input type="text"  name="firstname" required className="form-control invlid" id="firstname" aria-describedby="emailHelp" placeholder="Enter Firstname"/>
+                              <input type="text"  name="firstname" required className="form-control invlid" id="firstname" aria-describedby="emailHelp" placeholder="Enter Firstname" />
                               <div className="invalid-feedback">
                                  Please Enter valid name.
                               </div>

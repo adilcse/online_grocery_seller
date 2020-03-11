@@ -1,9 +1,8 @@
 import React from 'react';
 import './Signin.css';
 import { useDispatch, useSelector} from 'react-redux';
-import { EmailLogin, GoogleLogin } from "../../redux/actions/UserAction";
+import { EmailLogin } from "../../redux/actions/UserAction";
 import Loading from '../Loading';
-import { Button } from 'react-bootstrap';
 /**
  * displays login form to the user
  * @param {hideSignup} props to dide signup button
@@ -21,9 +20,7 @@ const Login = (props)=>{
     /**
      * tries to login with google signin
      */
-    const LoginWithGoogle=()=>{
-       GoogleLogin(dispatch);
-    }
+    
     const clear = ()=>{
       document.getElementById("email").value='';
       document.getElementById("password").value='';
@@ -47,10 +44,6 @@ const Login = (props)=>{
                  <hr className="hr-or"/>
                  <span className="span-or">or</span>
               </div>
-           </div>
-           <div className="col-md-12 mb-3 text-center">
-            <Button style={{backgroundColor:' #dd4b39',color: 'white'}} onClick={LoginWithGoogle}>
-               <h6 className='d-inline'>Login with Google</h6></Button>
            </div>
            {props.hideSignup?<></>:
            

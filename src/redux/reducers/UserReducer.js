@@ -8,6 +8,7 @@ import {
     REGISTER_USER_PENDING,
     REGISTER_USER_SUCCESS,
     REGISTER_USER_FAILED,
+    PLEASE_REGISTER_FIRST,
  } from "../../app/ActionConstant";
  import { 
     USER_TYPE_SELLER
@@ -19,7 +20,8 @@ import {
      loggedIn:false,
      userType:null,
      loggingIn:false,
-     error:false
+     error:false,
+     registerByGoogle:false
 
 
  }
@@ -68,7 +70,11 @@ export const userLogin=(state=initialState,action={})=>{
                 loggingIn:false,
                 error:action.payload,  
             }  
-        
+        case PLEASE_REGISTER_FIRST:
+            return{...state,
+                registerByGoogle:true,
+                userDetails:action.payload
+            }
         default:    
             return state;
      }
