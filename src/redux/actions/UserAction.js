@@ -101,7 +101,7 @@ const addUserToDb=(dispatch,userId,email,name,address)=>{
     id:userId,
     dateOfJoining:firebase.firestore.FieldValue.serverTimestamp(),
     address:address.formatted_address,
-    latLng:new firebase.firestore.GeoPoint(address.latLng.latitude,address.latLng.longitude)
+    coordinates:new firebase.firestore.GeoPoint(address.latLng.latitude,address.latLng.longitude)
 
 })
 .then(function() {
