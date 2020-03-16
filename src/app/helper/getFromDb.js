@@ -9,7 +9,6 @@ export const getFromDb=(query)=>{
         querySnapshot.forEach(function(doc) {
             items.push(doc.data());
         });
-        console.log(query,items);
         return items;
     })
     .catch(function(error) {

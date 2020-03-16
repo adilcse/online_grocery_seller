@@ -3,16 +3,18 @@ import { Container, Tabs,Tab} from 'react-bootstrap';
 import ExistingItem from '../components/addItem/ExistingItem';
 import NewItem from '../components/addItem/NewItem';
 import './AddItem.css';
+import { useSelector } from 'react-redux';
 const AddItemScreen=()=>{
+  const sellerId=useSelector(state=>state.userLogin.userId);
 return(
     <Container >
     <Tabs defaultActiveKey="newItem" id="addItemTab">
   <Tab eventKey="newItem" title="Existing Item">
-    <ExistingItem/>
+    <ExistingItem sellerId={sellerId}/>
     
   </Tab>
   <Tab eventKey="existingItem" title="New Item">
-    <NewItem/>
+    <NewItem sellerId={sellerId}/>
  
   </Tab>
  

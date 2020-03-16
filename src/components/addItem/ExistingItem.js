@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import { Form, Row, Col, Button, Alert } from 'react-bootstrap';
 import { Search } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import { searchProductInDb } from '../../app/helper/searchProductInDb';
 import { getItemFromDb } from '../../app/helper/getItemFromDb';
+import { addInExistingItem } from '../../app/helper/addInExistingItem';
 
 
 const error={
@@ -14,22 +15,46 @@ const touched={
     productId:false,
     productName:false,
 }
-const ExistingItem=()=>{
+const ExistingItem=(props)=>{
     const [changed,setChanged]=useState(false);
     const[idEnabled,setIdEnabled]=useState(true);
     const[productId,setProductId]=useState('');
     const [isLoading,setIsLoading]=useState(false);
     const [searchResults,setSearchResults]=useState([]);
     const [searchValue,setSearchValue]=useState('');
-    const [price,setPrice]=useState('0');
-    const [discount,setDiscount]=useState('0');
-    const [stock,setStock]=useState('0');
+    const [price,setPrice]=useState('');
+    const [discount,setDiscount]=useState('');
+    const [stock,setStock]=useState('');
+    const [errorMessage,showErrorMessage]=useState(false);
+    const [successMessage,showSuccessMessage]=useState(false);
     /**
      * handles type in id
      * @param {*} element input container
      */
     const handleSubmit=()=>{
-        console.log('submit     ')
+       showSuccessMessage(false);
+        if(productId && !isNaN(price) && !isNaN(discount) && !isNaN(stock)){
+            showErrorMessage(false);
+            let data={
+                sellerId:props.sellerId,
+                productId:productId,
+                name:searchValue,
+                price:parseInt(price),
+                stock:parseInt(stock),
+                discount:parseInt(discount)
+            }
+            addInExistingItem(data).then(res=>{
+                if(res){
+                    clear();
+                    showSuccessMessage(true);
+                }else{
+                    showErrorMessage(true);
+                }
+            });
+        }
+        else{
+            showErrorMessage(true);
+        }
     }
 const handleIdChange=(element)=>{
  const val=element.target.value;
@@ -94,6 +119,8 @@ const handleIdChange=(element)=>{
     const handleResultSelect=(element,data)=>{
        setProductId(data.result.id);
        setIdEnabled(false);
+       error.productId=false;
+       touched.productId=true;
        setSearchValue(data.result.title);
       
        
@@ -102,18 +129,30 @@ const handleIdChange=(element)=>{
      * clear fields in the form
      */
     const clear=()=>{
+        error.productId=true
+        error.productName=true
+        touched.productId=false
+        touched.productName=false
         setChanged(false);
         setIdEnabled(true);
         setProductId('');
         setSearchValue('');
         setSearchResults([]);
-        setPrice('0');
-        setDiscount('0');
-        setStock('0');
+        setPrice('');
+        setDiscount('');
+        setStock('');
     }
 return (
 
     <Form>
+         {errorMessage?
+      <Alert variant='danger'>
+        Please Enter correct data
+      </Alert>:<></>}
+      {successMessage?
+      <Alert variant='success'>
+        Data added Successfully
+      </Alert>:<></>}
         <Row >
      <Col md='6' className='m-auto'>
     <Form.Group controlId="productName">
@@ -135,7 +174,7 @@ return (
             <Form.Control   type="text" 
                             placeholder="Product ID" 
                             onChange={handleIdChange} 
-                            isInvalid={error.productId}
+                            isInvalid={error.productId && touched.productId}
                             isValid={!error.productId && touched.productId}
                             maxLength={20}
                             disabled={!idEnabled}

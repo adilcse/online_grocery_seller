@@ -1,3 +1,9 @@
 .results{
     left: 20% !important;
 }
+.file-drop{
+    height: 100%;
+    margin:auto;
+    font-size: large;
+    
+}

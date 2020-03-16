@@ -4,3 +4,5 @@ export  const LOGIN='LOGIN';
 export const REGISTER='REGISTER';
 export const ADDRESS='ADDRESS';
 export const ALGOLIA_INDEX_NAME='product_name';
+export const SELLER_ITEM="sellerItems";
+export const PRODUCT_COLLECTION='products';
