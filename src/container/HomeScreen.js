@@ -96,7 +96,7 @@ return(
        </Alert>:<></>}
   </Row>
   <BootstrapTable data={products}  pagination  options={{sortIndicator:true}} cellEdit={ cellEditProp }>
-        <TableHeaderColumn isKey dataField='productId' dataSort={ true }  caretRender={ getCaret } editable={false}>Product ID</TableHeaderColumn>
+        <TableHeaderColumn isKey dataField='id' dataSort={ true }  caretRender={ getCaret } editable={false}>Product ID</TableHeaderColumn>
         <TableHeaderColumn dataField='name' dataSort  caretRender={ getCaret }>Product Name</TableHeaderColumn>
         <TableHeaderColumn dataField='price' dataSort  caretRender={ getCaret }>MRP</TableHeaderColumn>
         <TableHeaderColumn dataField='discount' dataSort  caretRender={ getCaret } >Discount %</TableHeaderColumn>

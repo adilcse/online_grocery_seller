@@ -5,16 +5,11 @@ import {
     Route,
     Redirect
   } from "react-router-dom";
-  import { useDispatch } from "react-redux";
-import { Logout as LogoutAction} from "../../redux/actions/UserAction";
 import SellerNav from "../../section/header/Nav";
-import AddItemScreen from "../../container/AddItemScreen";
-
-const Home = lazy(() => import('../../container/HomeScreen'));
-
+const AddItemScreen=lazy(()=>import("../../container/AddItemScreen"));
+const OrdersScreen=lazy(()=>import("../../container/OrdersScreen"));
+const Home = lazy(()=>import('../../container/HomeScreen'));
 const SellerUserRoute=()=>{
-
-  
 return(
 
       <div className="App text-center">
@@ -22,6 +17,7 @@ return(
           <Switch>
             <Suspense fallback={<Loading size={100}/>}>
                 <Route path='/Home' component={Home} />
+                <Route path='/orders' component={OrdersScreen} />
                 <Route path='/additem' component={AddItemScreen}/>
                 <Route path='/' exact={true} component={Home}/>
                
