@@ -1,7 +1,7 @@
 import { db } from "../../firebaseConnect";
 
 const updateItemById=(itemId,cellName,cellValue)=>{
-db.collection('sellerItems').doc(itemId)
+return db.collection('sellerItems').doc(itemId)
 .update({
     [cellName]:cellValue
 }).then(()=>{

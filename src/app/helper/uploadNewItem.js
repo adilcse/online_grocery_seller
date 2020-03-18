@@ -1,22 +1,24 @@
 import { db } from "../../firebaseConnect"
 import { firebase } from "../../firebaseConnect";
-import { PRODUCT_COLLECTION, SELLER_ITEM } from "../AppConstant";
+import { SELLER_ITEM } from "../AppConstant";
 export const uploadNewItem=(data)=>{
-console.log(data);
-return db.collection(PRODUCT_COLLECTION).add({
-    name:data.name,
-    catagory:data.catagory,
-    description:data.description
-})
-.then(function(docRef) {
-    console.log("Document written with ID: ", docRef.id);
-    uploadImage(data.image,docRef.id);
-    uploadSellerItem(docRef.id,data);
-    return true;
-})
-.catch(function(error) {
-    console.error("Error adding document: ", error);
-    return false;
+return db.collection(SELLER_ITEM).add({
+  sellerId:data.sellerId,
+  price:data.price,
+  discount:data.discount,
+  stock:data.stock,
+  name:data.name,
+  catagory:data.catagory,
+  description:data.description,
+  image:null,
+  addedOn:firebase.firestore.FieldValue.serverTimestamp()
+}).then(docRef=>{
+  console.log('added to seller item id:'+docRef.id)
+  uploadImage(data.image,docRef.id);
+  return true;
+}).catch(err=>{
+  console.log('somr thing went wrong '+err);
+  return false;
 });
 }
 /**
@@ -27,7 +29,7 @@ return db.collection(PRODUCT_COLLECTION).add({
 const uploadImage=(file,id)=>{
     var storageRef = firebase.storage().ref('products/images');
 let metadata = {
-    contentType: 'image/jpeg'
+    contentType: file.type
   };
   const uploadTask = storageRef.child(id).put(file, metadata);
   uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
@@ -76,29 +78,10 @@ let metadata = {
  * @param {*} id product id
  */
 const setImageUrl=(url,id)=>{
-    db.collection(PRODUCT_COLLECTION).doc(id).update({
+    db.collection(SELLER_ITEM).doc(id).update({
         image:url
     }).then(function() {
         console.log("Document successfully updated!");
 
-    })
-}
-/**
- * upload the prodict details to seller item collection
- * @param {*} id seller id
- * @param {*} data item data
- */
-const uploadSellerItem=(id,data)=>{
-    db.collection(SELLER_ITEM).add({
-        sellerId:data.sellerId,
-        productId:id,
-        price:data.price,
-        discount:data.discount,
-        stock:data.stock,
-        name:data.name
-    }).then(id=>{
-        console.log('added to seller item id:'+id.id)
-    }).catch(err=>{
-        console.log('somr thing went wrong '+err);
     })
 }
