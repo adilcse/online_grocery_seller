@@ -16,7 +16,7 @@ const OrderList=(props)=>{
             </Container>
           
         )}else{
-            return(<></>)
+            return(<h3>Nothing ordered yet.</h3>)
         }
 }
 export default OrderList;
