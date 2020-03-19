@@ -6,3 +6,5 @@ export const ADDRESS='ADDRESS';
 export const ALGOLIA_INDEX_NAME='product_name';
 export const SELLER_ITEM="sellerItems";
 export const PRODUCT_COLLECTION='products';
+export const ORDER='ORDER';
+export const DETAILS='DETAILS';

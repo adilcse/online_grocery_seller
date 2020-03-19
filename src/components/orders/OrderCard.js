@@ -6,6 +6,7 @@ import Loading from '../Loading';
 import HeaderCard from './HeaderCard';
 import { getItemsByIds } from '../../app/helper/getItemsByIds';
 import { arrayMergeByObject } from '../../app/helper/arrayMergeByObject';
+import { DETAILS } from '../../app/AppConstant';
 const OrderCard=(props)=>{
     const{order}=props;
     const [loaded,setLoaded]=useState(false);
@@ -18,7 +19,7 @@ const OrderCard=(props)=>{
       })
         setLoaded(true);}
     const viewDetails=()=>{
-     
+        props.changePage(DETAILS,{...order,items:arrayMergeByObject(order.items,item,'id')});
     }
     if(order && loaded){
        

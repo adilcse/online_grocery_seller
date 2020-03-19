@@ -9,7 +9,7 @@ const OrderList=(props)=>{
             <Row className="justify-content-md-center">
               <Col xs={12} md={10}>
                 {props.orders.map((order,index)=>{
-                    return <OrderCard order={order} key={index}  />
+                    return <OrderCard order={order} key={index} changePage={props.changePage} />
                 })}
               </Col>
             </Row>
