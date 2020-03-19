@@ -1,9 +1,10 @@
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import{IoMdCheckmark,IoMdDocument,IoMdClose} from 'react-icons/io';
 const StatusCard=(props)=>{
-
    let prices=props.total.map(el=>{
         return el.price;
+        
    });
    let total=0;
    prices.forEach(element => {
@@ -71,9 +72,11 @@ return(
             </Col>
         </Row>
         <Row className='justify-content-center'>
-        <Button onClick={props.viewDetails}>View Details</Button>
+            <Col><Button className="outline-success" variant="outline-success" onClick={props.viewDetails}>Confirm<IoMdCheckmark/></Button></Col>
+            <Col><Button variant="outline-warning" onClick={props.viewDetails} disabled={true}> View details<IoMdDocument/></Button></Col>
+            <Col><Button className="outline-danger" variant="outline-danger">Cancel<IoMdClose/></Button></Col>
         </Row>
     </Container>
 )
 }
-export default StatusCard;
+export default StatusCard; 
