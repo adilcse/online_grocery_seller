@@ -43,8 +43,8 @@ const NewItem=(props)=>{
   } 
   const handleUploadClick=(event)=>{
     console.log(event.target.files);
-    imgFile=event.target.files[0];
-    setImageSet(URL.createObjectURL(event.target.files[0]));
+    imgFile=event.target.files[0]?event.target.files[0]:null;
+    setImageSet(URL.createObjectURL(imgFile));
   }
 const selectImage=()=>{
   document.getElementById('upload').click();
@@ -56,6 +56,7 @@ const selectImage=()=>{
     setDiscount('');
     setStock('');
     setImageSet(false);
+    setDescription('');
  }
  const handleSubmit=()=>{
   console.log(catagory);
