@@ -6,27 +6,19 @@ import{TiTick} from 'react-icons/ti';
 import {IoIosArrowBack} from 'react-icons/io';
 import {FiPhoneCall} from 'react-icons/fi';
 import { documentUpdate } from '../../app/helper/documentUpdate';
+import { changeStatusText } from '../../app/helper/changeStatusText';
+import { useSelector } from 'react-redux';
 const OrderDetails=(props)=>{
     const{details}=props;
     const [deliveryStatus,setDeliveryStatus]=useState(details.status);
     const [currentButton,setCurrentButton]=useState(details.status);
-    const changeText=(st)=>{
-        switch(st){
-            case ACCEPT:
-                return ACCEPT;
-            case OUT_FOR_DELIVERY:
-                return 'OUT FOR DELIVERY';
-                
-            case DELIVERED:
-                return DELIVERED;
-            default:
-                return st;
-        }
-    }
-    const [statusText,setStatusText]=useState(changeText(details.status));
+    const seller=useSelector(state=>state.userLogin);
+    const [statusText,setStatusText]=useState(changeStatusText(details.status));
+    const userLatlng=details.DeliveryAddress.latLng;
+    const sellerLatlng=seller.coordinates;
     const handleSelect=(e)=>{
         const st=e.target.id;
-        setStatusText(changeText(st));
+        setStatusText(changeStatusText(st));
         setCurrentButton(st);
     }
     const handleUpdate=()=>{
@@ -36,7 +28,7 @@ const OrderDetails=(props)=>{
             }
         })
     }
-    console.log(details)
+   
     const DropOptions=()=>{
         if(deliveryStatus===ACCEPT){
             return <>
@@ -62,6 +54,7 @@ return(
                 return<Row key={item.id} className='text-center'>
                     <h5 className="text-secondary">{item.name} ({item.catagory.join()}) ₹{item.price} * {item.quantity}=₹{item.price*item.quantity}/- Only</h5>
                 </Row>
+                return null;
               
             })}       
             </Col>
@@ -81,7 +74,7 @@ return(
             </Col>
             </Row>
             <Row className="bg-light">
-                <Col><Button variant="outline-secondary"> View   in Map <FaGlobeAmericas/></Button></Col>
+                <Col><Button variant="outline-secondary" href={`https://maps.google.com/maps?saddr=${sellerLatlng.latitude},${sellerLatlng.longitude}&daddr=${userLatlng.latitude},${userLatlng.longitude}`}  target="_blank"> View   in Map <FaGlobeAmericas/></Button></Col>
                 <Col>{deliveryStatus!==DELIVERED?<Button variant="outline-warning" onClick={handleUpdate} > Update <TiTick/></Button>:<></>}</Col>
                 <Col><Button variant="outline-primary" onClick={()=>props.changePage(ORDER)}><IoIosArrowBack/>Back</Button></Col>
             </Row>

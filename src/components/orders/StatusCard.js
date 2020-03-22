@@ -1,7 +1,8 @@
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import{IoMdCheckmark,IoMdDocument,IoMdClose} from 'react-icons/io';
-import { PENDING, ACCEPT } from '../../app/AppConstant';
+import { PENDING, REJECT } from '../../app/AppConstant';
+import { changeStatusText } from '../../app/helper/changeStatusText';
 const StatusCard=(props)=>{
    let prices=props.total.map(el=>{
        if(el.accept)
@@ -40,7 +41,7 @@ return(
                      status 
                     </Col>
                     <Col md='8' xs='6'>
-                     {props.state}
+                     {changeStatusText(props.state)}
                     </Col>    
                 </Row>
               
@@ -76,7 +77,7 @@ return(
         </Row>
         <Row className='justify-content-center'>
             <Col>{props.state===PENDING?<Button className="outline-success" variant="outline-success" onClick={()=>props.onAccept(true)}>Confirm<IoMdCheckmark/></Button>:<></>}</Col>
-            <Col>{props.state===ACCEPT?<Button variant="outline-warning" onClick={()=>props.viewDetails(total)}> View details<IoMdDocument/></Button>:<></>}</Col>
+            <Col>{(props.state!==PENDING|| props.state!==REJECT)?<Button variant="outline-warning" onClick={()=>props.viewDetails(total)}> View details<IoMdDocument/></Button>:<></>}</Col>
             <Col>{props.state===PENDING?<Button className="outline-danger" variant="outline-danger" onClick={()=>props.onAccept(false)}>Cancel<IoMdClose/></Button>:<></>}</Col>
         </Row>
     </Container>

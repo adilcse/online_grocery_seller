@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { CardDeck, Card, Alert, Row} from 'react-bootstrap';
+import { CardDeck, Card, Alert} from 'react-bootstrap';
 import ItemCard from './ItemCard';
 import StatusCard from './StatusCard';
 import Loading from '../Loading';
 import HeaderCard from './HeaderCard';
 import { getItemsByIds } from '../../app/helper/getItemsByIds';
 import { arrayMergeByObject } from '../../app/helper/arrayMergeByObject';
-import { DETAILS, PENDING, ACCEPT, REJECT } from '../../app/AppConstant';
+import { DETAILS, ACCEPT, REJECT } from '../../app/AppConstant';
 import { orderStatusUpdate } from '../../app/helper/orderStatusUpdate';
 const OrderCard=(props)=>{
     const{order}=props;
