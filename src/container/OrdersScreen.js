@@ -18,9 +18,9 @@ const OrdersScreen=(props)=>{
         
        snapshot.forEach(element => {
            if(element.type==='added'){
-            arr.unshift(element.doc.data())
+            arr.unshift({...element.doc.data(),id:element.doc.id})
            }else if(element.type==='modified')
-         arr[arr.length-element.newIndex-1]=element.doc.data();
+         arr[arr.length-element.newIndex-1]={...element.doc.data(),id:element.doc.id};
        });
         setSource([...arr])
        setChanged(!changed)

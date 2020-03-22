@@ -1,14 +1,19 @@
 import React from "react";
-import { Row,  Media, Col } from "react-bootstrap";
+import { Row,  Media, Col, Form } from "react-bootstrap";
+import { PENDING } from "../../app/AppConstant";
+
 const ItemCard=(props)=>{
-	const{items}=props;
+	const items=props.items;
+	//const [accept,setAccept]=useState(new Array(items.length).fill(true));
+	
 	if(items && items.length>0)
 		return(
 			<ul className="list-unstyled">
 				{items.map((item,index)=>{
 
 					return(
-						<Media as="li" className="border-bottom mt-2 pb-1" key={index}>
+						<Media as="li" className={item.accept?'border-bottom mt-2 pb-1':'border-bottom mt-2 pb-1 text-danger'} key={index}>
+							{props.state===PENDING?<Form.Check type="checkbox" value={item.id} checked={item.accept} onChange={props.itemStatus} label="Accept" />:<></>}
 							<img
 							width={80}
 							height={80}

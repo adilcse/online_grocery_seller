@@ -1,10 +1,13 @@
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import{IoMdCheckmark,IoMdDocument,IoMdClose} from 'react-icons/io';
+import { PENDING, ACCEPT } from '../../app/AppConstant';
 const StatusCard=(props)=>{
    let prices=props.total.map(el=>{
-        return el.price;
-        
+       if(el.accept)
+            return el.price*el.quantity;    
+        else
+            return 0; 
    });
    let total=0;
    prices.forEach(element => {
@@ -37,7 +40,7 @@ return(
                      status 
                     </Col>
                     <Col md='8' xs='6'>
-                     {props.status}
+                     {props.state}
                     </Col>    
                 </Row>
               
@@ -72,9 +75,9 @@ return(
             </Col>
         </Row>
         <Row className='justify-content-center'>
-            <Col><Button className="outline-success" variant="outline-success" onClick={props.viewDetails}>Confirm<IoMdCheckmark/></Button></Col>
-            <Col><Button variant="outline-warning" onClick={props.viewDetails} disabled={true}> View details<IoMdDocument/></Button></Col>
-            <Col><Button className="outline-danger" variant="outline-danger">Cancel<IoMdClose/></Button></Col>
+            <Col>{props.state===PENDING?<Button className="outline-success" variant="outline-success" onClick={()=>props.onAccept(true)}>Confirm<IoMdCheckmark/></Button>:<></>}</Col>
+            <Col>{props.state===ACCEPT?<Button variant="outline-warning" onClick={()=>props.viewDetails(total)}> View details<IoMdDocument/></Button>:<></>}</Col>
+            <Col>{props.state===PENDING?<Button className="outline-danger" variant="outline-danger" onClick={()=>props.onAccept(false)}>Cancel<IoMdClose/></Button>:<></>}</Col>
         </Row>
     </Container>
 )
