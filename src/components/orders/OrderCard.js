@@ -10,7 +10,6 @@ import { DETAILS, ACCEPT, REJECT } from '../../app/AppConstant';
 import { orderStatusUpdate } from '../../app/helper/orderStatusUpdate';
 const OrderCard=(props)=>{
     const{order}=props;
-    console.log(order)
     const [loaded,setLoaded]=useState(false);
     const [item,setItem]=useState(order.items);
     const [orderStatus,setOrderStatus]=useState(order.status);
@@ -32,7 +31,7 @@ const OrderCard=(props)=>{
         setShowError(false);
         orderStatusUpdate(order.id,status,item).then(res=>{
            setOrderStatus(status?ACCEPT:REJECT);
-        });
+        }); 
     }
   if(order && !loaded){
       
