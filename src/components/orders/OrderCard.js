@@ -10,6 +10,7 @@ import { DETAILS, ACCEPT, REJECT } from '../../app/AppConstant';
 import { orderStatusUpdate } from '../../app/helper/orderStatusUpdate';
 const OrderCard=(props)=>{
     const{order}=props;
+    console.log(order)
     const [loaded,setLoaded]=useState(false);
     const [item,setItem]=useState(order.items);
     const [orderStatus,setOrderStatus]=useState(order.status);
@@ -51,7 +52,7 @@ const OrderCard=(props)=>{
                
             <Card>
                 <Card.Header>
-                    <HeaderCard orderedOn={order.orderedOn} deleveredOn={order.deleveredOn}/>
+                    <HeaderCard orderedOn={order.orderedOn} deliveredOn={order.deliveredOn}/>
                 </Card.Header>
             <Card.Body>
             <ItemCard items={item} itemStatus={itemStatus} state={orderStatus}/>

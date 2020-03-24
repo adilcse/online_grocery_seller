@@ -8,6 +8,7 @@ import {FiPhoneCall} from 'react-icons/fi';
 import { documentUpdate } from '../../app/helper/documentUpdate';
 import { changeStatusText } from '../../app/helper/changeStatusText';
 import { useSelector } from 'react-redux';
+import {firebase} from '../../firebaseConnect';
 const OrderDetails=(props)=>{
     const{details}=props;
     const [deliveryStatus,setDeliveryStatus]=useState(details.status);
@@ -22,7 +23,10 @@ const OrderDetails=(props)=>{
         setCurrentButton(st);
     }
     const handleUpdate=()=>{
-        documentUpdate('sellerOrders',details.id,{status:currentButton}).then(res=>{
+        const data=currentButton===DELIVERED?
+                    {status:currentButton,deliveredOn:firebase.firestore.FieldValue.serverTimestamp()}
+                    :{status:currentButton};
+        documentUpdate('sellerOrders',details.id,data).then(res=>{
             if(res){
                 setDeliveryStatus(currentButton)
             }

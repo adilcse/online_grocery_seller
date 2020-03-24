@@ -15,7 +15,6 @@ const [showError,setShowError]=useState(false);
 const [showSuccess,setShowSuccess]=useState(false);
 if(!itemsLoaded){
 getSellerItems(sellerId,false,10000).then(res=>{
-  console.log(res)
   if(res)
     setProducts(res);
   else
@@ -25,7 +24,9 @@ getSellerItems(sellerId,false,10000).then(res=>{
 }
 const deleteItem=(items)=>{
   console.log(items)
-  deleteSellerItems(sellerId,items);
+  deleteSellerItems(sellerId,items).then(()=>{
+    showSuccess(true);
+  });
 }
     const getCaret=(direction)=> {
         if (direction === 'asc') {

@@ -6,12 +6,12 @@ import {documentUpdate} from './documentUpdate';
             id:el.id,
             price:el.price,
             quantity:el.quantity,
-            accept:status?el.accept:false}
+            accept:status?el.accept:false,
+        }
     });
     const Norder={
         items:Nitem,
-        status:ACCEPT
+        status:status?ACCEPT:REJECT,
     }
-    Norder.status=status?ACCEPT:REJECT;
     return documentUpdate('sellerOrders',sellerOrderId,Norder);
 }

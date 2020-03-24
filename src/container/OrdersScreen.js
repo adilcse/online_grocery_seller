@@ -5,25 +5,26 @@ import {getOrders} from '../app/helper/getOrders';
 import  OrdersList  from "../components/orders/OrderList";
 import OrderDetails from '../components/orders/OrderDetails';
 import { ORDER } from '../app/AppConstant';
-let arr=[];
 
 const OrdersScreen=(props)=>{
     const sellerId=useSelector(state=>state.userLogin.userId);
     const [loaded,setLoaded]=useState(false);
-    const [changed,setChanged]=useState(false);
     const [source,setSource]=useState([])
     const [currentPage,setCurrentPage]=useState(ORDER);
     const [orderDetails,setorderDetails]=useState({});
+    function updateArrayElement(array, newItem, atIndex) {
+      return array.map((item, index) => index === atIndex ? newItem : item);
+  }
     const getData=(snapshot)=>{
-        
+      console.log(snapshot);
        snapshot.forEach(element => {
+         const data={...element.doc.data(),id:element.doc.id};
            if(element.type==='added'){
-            arr.unshift({...element.doc.data(),id:element.doc.id})
-           }else if(element.type==='modified')
-         arr[arr.length-element.newIndex-1]={...element.doc.data(),id:element.doc.id};
+            setSource(source=>[...source,data]);
+           }else if(element.type==='modified'){
+            setSource(s=>updateArrayElement(s,data,element.oldIndex));
+           }
        });
-        setSource([...arr])
-       setChanged(!changed)
     }
     if(!loaded && sellerId){
         getOrders(sellerId,getData);

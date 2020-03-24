@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import OrderCard from "./OrderCard";
 const OrderList=(props)=>{
+  console.log(props.orders)
     if(props.orders.length>0){
         return(
             <Container>
@@ -9,10 +10,6 @@ const OrderList=(props)=>{
             <Row className="justify-content-md-center">
               <Col xs={12} md={10}>
                 {props.orders.map((order,index)=>{
-                  if(!order.status)
-                    order.items=order.items.map(it=>{
-                      it.accept=true
-                    return it});
                   return <OrderCard order={order} key={index} changePage={props.changePage} />
                 })}
               </Col>

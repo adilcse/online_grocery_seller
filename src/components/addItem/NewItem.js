@@ -68,7 +68,7 @@ const selectImage=()=>{
     catagory.forEach(item=>{
       cat.push(allCatagory.find((element)=>{
         return element.name===item.name;
-      }).id)
+      }).catId)
     }); 
     let data={
       sellerId:props.sellerId,
