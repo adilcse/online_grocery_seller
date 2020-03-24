@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import OrderCard from "./OrderCard";
 const OrderList=(props)=>{
@@ -9,7 +9,7 @@ const OrderList=(props)=>{
             <Row className="justify-content-md-center">
               <Col xs={12} md={10}>
                 {props.orders.map((order,index)=>{  
-                  return <OrderCard order={order} key={index} changePage={props.changePage} />
+                  return <OrderCard order={order} key={index} changePage={props.changePage} orderAcceptReject={props.orderAcceptReject} />
                 })}
               </Col>
             </Row>

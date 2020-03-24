@@ -4,17 +4,7 @@ import{IoMdCheckmark,IoMdDocument,IoMdClose} from 'react-icons/io';
 import { PENDING, REJECT } from '../../app/AppConstant';
 import { changeStatusText } from '../../app/helper/changeStatusText';
 const StatusCard=(props)=>{
-   let prices=props.total.map(el=>{
-       if(el.accept)
-            return el.price*el.quantity;    
-        else
-            return 0; 
-   });
-   let total=0;
-   prices.forEach(element => {
-       total+=element;
-   });
-
+    const {total}=props;
 return(
     <Container  >
         <Row className='border-bottom'>
@@ -53,7 +43,7 @@ return(
                     Sub Total 
                     </Col>
                     <Col md='4' xs='4'>
-                    ₹{total}
+                    ₹{total.subTotal}
                     </Col>
                 </Row>
                 <Row className='border-bottom pb-3'>
@@ -61,7 +51,7 @@ return(
                     Delevery Charges  
                     </Col>
                     <Col md='4' xs='4'>
-                    ₹{0} 
+                    ₹{total.deliveryCharges} 
                     </Col>   
                 </Row>
                 <Row className='h5'>
@@ -69,7 +59,7 @@ return(
                     Grand Total 
                     </Col>
                     <Col md='4' xs='4' className='d-flex'>
-                    ₹{total}
+                    ₹{total.total}
                     </Col>    
                 </Row>
 
@@ -77,7 +67,7 @@ return(
         </Row>
         <Row className='justify-content-center'>
             <Col>{props.state===PENDING?<Button className="outline-success" variant="outline-success" onClick={()=>props.onAccept(true)}>Confirm<IoMdCheckmark/></Button>:<></>}</Col>
-            <Col>{(props.state!==PENDING|| props.state!==REJECT)?<Button variant="outline-warning" onClick={()=>props.viewDetails(total)}> View details<IoMdDocument/></Button>:<></>}</Col>
+            <Col>{(props.state!==PENDING && props.state!==REJECT)?<Button variant="outline-warning" onClick={()=>props.viewDetails()}> View details<IoMdDocument/></Button>:<></>}</Col>
             <Col>{props.state===PENDING?<Button className="outline-danger" variant="outline-danger" onClick={()=>props.onAccept(false)}>Cancel<IoMdClose/></Button>:<></>}</Col>
         </Row>
     </Container>

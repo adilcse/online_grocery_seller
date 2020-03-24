@@ -6,13 +6,12 @@ import Loading from '../Loading';
 import HeaderCard from './HeaderCard';
 import { getItemsByIds } from '../../app/helper/getItemsByIds';
 import { arrayMergeByObject } from '../../app/helper/arrayMergeByObject';
-import { DETAILS, ACCEPT, REJECT } from '../../app/AppConstant';
-import { orderStatusUpdate } from '../../app/helper/orderStatusUpdate';
+import { DETAILS } from '../../app/AppConstant';
 const OrderCard=(props)=>{
     const{order}=props;
     const [loaded,setLoaded]=useState(false);
     const [item,setItem]=useState(order.items);
-    const [orderStatus,setOrderStatus]=useState(order.status);
+    const orderStatus=order.status;
     const [selectedItems,setSelectedItems]=useState(order.items.filter(el=>el.accept).length);
     const [showError,setShowError]=useState(false);
     const itemStatus=(e)=>{
@@ -29,9 +28,7 @@ const OrderCard=(props)=>{
                 return;   
         }
         setShowError(false);
-        orderStatusUpdate(order.id,status,item).then(res=>{
-           setOrderStatus(status?ACCEPT:REJECT);
-        }); 
+        props.orderAcceptReject(order.id,status,item);
     }
   if(order && !loaded){
       
@@ -40,8 +37,8 @@ const OrderCard=(props)=>{
          setItem(arrayMergeByObject(res,item,'id'))
       })
         setLoaded(true);}
-    const viewDetails=(total)=>{
-        props.changePage(DETAILS,{...order,total:total,items:arrayMergeByObject(order.items,item,'id')});
+    const viewDetails=()=>{
+        props.changePage(DETAILS,{...order,items:arrayMergeByObject(order.items,item,'id')});
     }
     if(order && loaded){
         return (
@@ -57,7 +54,7 @@ const OrderCard=(props)=>{
             <ItemCard items={item} itemStatus={itemStatus} state={orderStatus}/>
             <StatusCard address={order.DeliveryAddress} 
                         paymentMode={order.paymentMode} 
-                        total={item} 
+                        total={order.total} 
                         viewDetails={viewDetails}
                         onAccept={handleAccept}
                         state={orderStatus}

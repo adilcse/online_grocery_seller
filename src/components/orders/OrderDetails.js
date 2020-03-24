@@ -26,11 +26,8 @@ const OrderDetails=(props)=>{
         const data=currentButton===DELIVERED?
                     {status:currentButton,deliveredOn:firebase.firestore.FieldValue.serverTimestamp()}
                     :{status:currentButton};
-        documentUpdate('sellerOrders',details.id,data).then(res=>{
-            if(res){
-                setDeliveryStatus(currentButton)
-            }
-        })
+        props.orderUpdate('sellerOrders',details.id,data);
+        setDeliveryStatus(currentButton);
     }
    
     const DropOptions=()=>{
@@ -69,7 +66,7 @@ return(
             <Row> 
             Contact:  <FiPhoneCall/>  {details.DeliveryAddress.mobile},{details.DeliveryAddress.alternate}
             </Row>
-            <Row>Payment to be recieved:<b>₹{details.total}/- Only </b> </Row>
+            <Row>Payment to be recieved:<b>₹{details.total.total}/- Only </b> </Row>
             <Row>Change Status: 
                 <DropdownButton id="dropdown-update-button" variant={deliveryStatus===currentButton?'success':'secondary'} title={statusText}>
                    <DropOptions/>
