@@ -4,7 +4,6 @@ import {Register as RegisterWithFirebase } from '../../redux/actions/UserAction'
 import { Redirect } from 'react-router';
 import Loading from '../Loading';
 import ErrorMessage from '../ErrorMessage';
-import { Button } from 'react-bootstrap';
 import { LOGIN,ADDRESS } from '../../app/AppConstant';
 const Register = (props)=>{
    const dispatch=useDispatch();

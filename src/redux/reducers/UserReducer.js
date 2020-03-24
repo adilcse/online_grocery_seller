@@ -21,7 +21,8 @@ import {
      userType:null,
      loggingIn:false,
      error:false,
-     registerByGoogle:false
+     registerByGoogle:false,
+     coordinates:null
 
 
  }
@@ -38,7 +39,8 @@ export const userLogin=(state=initialState,action={})=>{
                 name:action.payload.name,
                 userType:action.payload.userType,
                 address:action.payload.address,
-                error:false
+                error:false,
+                coordinates:action.payload.coordinates,
             } 
        
         case LOGIN_USER_FAILED:

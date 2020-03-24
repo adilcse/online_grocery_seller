@@ -6,6 +6,7 @@ import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import updateItemById from '../app/helper/updateItemById';
 import getSellerItems from '../app/helper/getSellerItems';
+import { deleteSellerItems } from '../app/helper/deleteSellerItems';
 const HomeScreen = ()=>{
 const [products,setProducts]=useState([]);
 const [itemsLoaded,setItemsLoaded]=useState(false);
@@ -13,14 +14,19 @@ const sellerId=useSelector(state=>state.userLogin.userId);
 const [showError,setShowError]=useState(false);
 const [showSuccess,setShowSuccess]=useState(false);
 if(!itemsLoaded){
-getSellerItems(sellerId).then(res=>{
-  console.log(res)
+getSellerItems(sellerId,false,10000).then(res=>{
   if(res)
     setProducts(res);
   else
     setShowError(true);
   setItemsLoaded(true);
 })
+}
+const deleteItem=(items)=>{
+  console.log(items)
+  deleteSellerItems(sellerId,items).then(()=>{
+    showSuccess(true);
+  });
 }
     const getCaret=(direction)=> {
         if (direction === 'asc') {
@@ -95,13 +101,15 @@ return(
          updated successfully
        </Alert>:<></>}
   </Row>
-  <BootstrapTable data={products}  pagination  options={{sortIndicator:true}} cellEdit={ cellEditProp }>
-        <TableHeaderColumn isKey dataField='id' dataSort={ true }  caretRender={ getCaret } editable={false}>Product ID</TableHeaderColumn>
+  <Row className='text-left'>
+  <BootstrapTable data={products}  pagination deleteRow={true} selectRow={{mode:'checkbox'}}  options={{sortIndicator:true,afterDeleteRow:deleteItem}} cellEdit={ cellEditProp }>
+        <TableHeaderColumn isKey dataField='id' dataSort={ true } hidden  caretRender={ getCaret } editable={false}>Product ID</TableHeaderColumn>
         <TableHeaderColumn dataField='name' dataSort  caretRender={ getCaret }>Product Name</TableHeaderColumn>
         <TableHeaderColumn dataField='price' dataSort  caretRender={ getCaret }>MRP</TableHeaderColumn>
         <TableHeaderColumn dataField='discount' dataSort  caretRender={ getCaret } >Discount %</TableHeaderColumn>
         <TableHeaderColumn dataField='stock' dataSort  caretRender={ getCaret }>Current Stock</TableHeaderColumn>
   </BootstrapTable>
+  </Row>
     </Container>
 )
 }

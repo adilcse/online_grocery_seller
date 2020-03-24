@@ -8,8 +8,8 @@ const OrderList=(props)=>{
             {/* Stack the columns on mobile by making one full-width and the other half-width */}
             <Row className="justify-content-md-center">
               <Col xs={12} md={10}>
-                {props.orders.map((order,index)=>{
-                    return <OrderCard order={order} key={index} changePage={props.changePage} />
+                {props.orders.map((order,index)=>{  
+                  return <OrderCard order={order} key={index} changePage={props.changePage} orderAcceptReject={props.orderAcceptReject} />
                 })}
               </Col>
             </Row>

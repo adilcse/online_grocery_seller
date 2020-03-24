@@ -2,8 +2,7 @@ import React, { lazy, Suspense } from "react";
 import Loading from "../../components/Loading";
 import {
     Switch,
-    Route,
-    Redirect
+    Route
   } from "react-router-dom";
 import SellerNav from "../../section/header/Nav";
 const AddItemScreen=lazy(()=>import("../../container/AddItemScreen"));
