@@ -52,7 +52,7 @@ const OrderCard=(props)=>{
                 </Card.Header>
             <Card.Body>
             <ItemCard items={item} itemStatus={itemStatus} state={orderStatus}/>
-            <StatusCard address={order.DeliveryAddress} 
+            <StatusCard address={order.address} 
                         paymentMode={order.paymentMode} 
                         total={order.total} 
                         viewDetails={viewDetails}
