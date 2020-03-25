@@ -5,7 +5,6 @@ import {FaGlobeAmericas} from 'react-icons/fa';
 import{TiTick} from 'react-icons/ti';
 import {IoIosArrowBack} from 'react-icons/io';
 import {FiPhoneCall} from 'react-icons/fi';
-import { documentUpdate } from '../../app/helper/documentUpdate';
 import { changeStatusText } from '../../app/helper/changeStatusText';
 import { useSelector } from 'react-redux';
 import {firebase} from '../../firebaseConnect';
@@ -15,7 +14,7 @@ const OrderDetails=(props)=>{
     const [currentButton,setCurrentButton]=useState(details.status);
     const seller=useSelector(state=>state.userLogin);
     const [statusText,setStatusText]=useState(changeStatusText(details.status));
-    const userLatlng=details.DeliveryAddress.latLng;
+    const userLatlng=details.address.latLng;
     const sellerLatlng=seller.coordinates;
     const handleSelect=(e)=>{
         const st=e.target.id;
@@ -53,18 +52,18 @@ return(
             {details.items.map(item=>{
                 if(item.accept)
                 return<Row key={item.id} className='text-center'>
-                    <h5 className="text-secondary">{item.name} ({item.catagory.join()}) ₹{item.price} * {item.quantity}=₹{item.price*item.quantity}/- Only</h5>
+                    <h6 className="text-secondary">{item.name} ({item.catagory.join()}) ₹{item.price} * {item.quantity}=₹{item.price*item.quantity}/- Only</h6>
                 </Row>
                 return null;
               
             })}       
             </Col>
             <Col>
-            <Row> Order by : {details.DeliveryAddress.name}</Row>
-            <Row>Address: {details.DeliveryAddress.address},{details.DeliveryAddress.city},{details.DeliveryAddress.locality},{details.DeliveryAddress.landmark}</Row>
-            <Row> Pin:{details.DeliveryAddress.pin}</Row>
+            <Row> Order by : {details.address.name}</Row>
+            <Row className='text-truncate'>Address: {details.address.address},{details.address.city},{details.address.locality},{details.address.landmark}</Row>
+            <Row> Pin:{details.address.pin}</Row>
             <Row> 
-            Contact:  <FiPhoneCall/>  {details.DeliveryAddress.mobile},{details.DeliveryAddress.alternate}
+            Contact:  <FiPhoneCall/>  {details.address.mobile},{details.address.alternate}
             </Row>
             <Row>Payment to be recieved:<b>₹{details.total.total}/- Only </b> </Row>
             <Row>Change Status: 

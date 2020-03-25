@@ -58,6 +58,7 @@ const OrdersScreen=(props)=>{
              
        },[sellerId]);
 const changePage=(page,data={})=>{
+  console.log(data)
   setCurrentPage(page);
   setorderDetails(data);
 }
