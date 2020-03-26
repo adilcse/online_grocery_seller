@@ -1,6 +1,8 @@
 import { LOGOUT_USER_PENDING, LOGOUT_USER_SUCCESS,LOGOUT_USER_FAILED, LOGIN_USER_PENDING, LOGIN_USER_FAILED, LOGIN_USER_SUCCESS, REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, REGISTER_USER_PENDING } from "../../app/ActionConstant";
 import {firebase, db } from '../../firebaseConnect';
 import {  SELLER_VERIFICATION_PENDING } from "../../app/AppConstant";
+import * as geofirex from 'geofirex';
+const geo = geofirex.init(firebase);
 /**
  * Tries to signin with given email and password
  * if verifies logsin the user
@@ -94,15 +96,17 @@ export const ValidateUser=(dispatch,user,by='email')=>{
 });
 }
 const addUserToDb=(dispatch,userId,email,name,address)=>{
-  db.collection("seller").doc(userId).set({
+  const seller={
     email: email,
     name:name,
     userType:SELLER_VERIFICATION_PENDING,
     id:userId,
     dateOfJoining:firebase.firestore.FieldValue.serverTimestamp(),
     address:address.formatted_address,
-    coordinates:new firebase.firestore.GeoPoint(address.latLng.latitude,address.latLng.longitude)
-
+  }
+  const position=geo.point(address.latLng.latitude,address.latLng.longitude);
+  db.collection("seller").doc(userId).set({
+   ...seller,position
 })
 .then(function() {
    dispatch({type:REGISTER_USER_SUCCESS,payload:{uid:userId,email:email}});
