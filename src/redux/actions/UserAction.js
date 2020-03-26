@@ -1,6 +1,6 @@
 import { LOGOUT_USER_PENDING, LOGOUT_USER_SUCCESS,LOGOUT_USER_FAILED, LOGIN_USER_PENDING, LOGIN_USER_FAILED, LOGIN_USER_SUCCESS, REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, REGISTER_USER_PENDING } from "../../app/ActionConstant";
 import {firebase, db } from '../../firebaseConnect';
-import {  SELLER_VERIFICATION_PENDING } from "../../app/AppConstant";
+import {  SELLER_VERIFICATION_PENDING, USER_TYPE_SELLER } from "../../app/AppConstant";
 import * as geofirex from 'geofirex';
 const geo = geofirex.init(firebase);
 /**
@@ -12,12 +12,11 @@ const geo = geofirex.init(firebase);
  */
 
 export const EmailLogin=(dispatch,email,password)=>{
-    console.log("action",email, password);
     dispatch({ type: LOGIN_USER_PENDING});
     //handles user signin
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then(user=>{
-      LoginStatus(dispatch);
+     // LoginStatus(dispatch);
     })
       .catch(function(error) {
         // Handle Errors here.
@@ -44,7 +43,6 @@ firebase.auth().createUserWithEmailAndPassword(email, password)
 })
 .catch(function(error) {
   if(error.code==='auth/email-already-in-use'){
-
   }
   console.log(error);
   dispatch({type:REGISTER_USER_FAILED,payload:{...error}});
@@ -80,7 +78,13 @@ export const LoginStatus=(dispatch)=>{
 export const ValidateUser=(dispatch,user,by='email')=>{
   db.collection("seller").doc(user.uid).get().then(function(doc) {
     if (doc.exists) {
-      dispatch({type:LOGIN_USER_SUCCESS,payload:{...user,...doc.data()}});
+     if(doc.data().userType===USER_TYPE_SELLER)
+          dispatch({type:LOGIN_USER_SUCCESS,payload:{...user,...doc.data()}});
+      else{
+        dispatch({type:LOGIN_USER_FAILED,payload:{code:'Seller Activation pending. please contact admin.'}});
+        Logout(dispatch);
+
+      }
       
     } else {
         // doc.data() will be undefined in this case
@@ -92,6 +96,7 @@ export const ValidateUser=(dispatch,user,by='email')=>{
 
     }
 }).catch(function(error) {
+  dispatch({type:LOGIN_USER_FAILED,payload:{code:'no Internet'}});
     console.log("Error getting document:", error);
 });
 }

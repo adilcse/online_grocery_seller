@@ -40,15 +40,15 @@ export const userLogin=(state=initialState,action={})=>{
                 userType:action.payload.userType,
                 address:action.payload.address,
                 error:false,
-                coordinates:action.payload.coordinates,
+                coordinates:action.payload.position.geopoint,
             } 
        
         case LOGIN_USER_FAILED:
-            return {...state,...initialState,error:action.payload};
+            return {...state,...initialState,error:action.payload?action.payload:state.error};
         case LOGOUT_USER_FAILED:
             return {...state,error:action.error}   
         case LOGOUT_USER_SUCCESS:
-            return {...initialState};
+            return {...initialState,error:state.error};
         case LOGOUT_USER_PENDING:
             return {...state,loggingIn:true}        
         

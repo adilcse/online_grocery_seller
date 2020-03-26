@@ -1,7 +1,7 @@
 import { ACCEPT, REJECT } from "../AppConstant";
 import {documentUpdate} from './documentUpdate';
  export const orderStatusUpdate=(sellerOrderId,status,item={})=>{
-     console.log(item)
+
     let count=0,tot=0;
     const Nitem=item.map(el=>{
         if(!el.accept ||!status){
@@ -21,6 +21,6 @@ import {documentUpdate} from './documentUpdate';
         "total.refundAmmount":tot,
         "total.rejectItems":count
     }
-    console.log(Norder)
+   
     return documentUpdate('sellerOrders',sellerOrderId,Norder);
 }

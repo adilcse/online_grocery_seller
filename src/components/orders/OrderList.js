@@ -1,7 +1,9 @@
 import React from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import OrderCard from "./OrderCard";
+import { useSelector } from "react-redux";
 const OrderList=(props)=>{
+  const products=useSelector(state=>state.productReducer);
     if(props.orders.length>0){
         return(
             <Container>
@@ -9,7 +11,12 @@ const OrderList=(props)=>{
             <Row className="justify-content-md-center">
               <Col xs={12} md={10}>
                 {props.orders.map((order,index)=>{  
-                  return <OrderCard order={order} key={index} changePage={props.changePage} orderAcceptReject={props.orderAcceptReject} />
+                  return <OrderCard order={order} 
+                                    key={index} 
+                                    changePage={props.changePage} 
+                                    orderAcceptReject={props.orderAcceptReject} 
+                                    sellerId={props.sellerId}
+                                    products={products}/>
                 })}
               </Col>
             </Row>

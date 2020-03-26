@@ -3,8 +3,10 @@ import { Form, Row, Col, Button, Alert } from 'react-bootstrap';
 import FileDrop from 'react-file-drop';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import { Typeahead } from 'react-bootstrap-typeahead';
-import { getCatagories } from '../../app/helper/getCatagories';
+import Loading from '../../components/Loading';
 import { uploadNewItem } from '../../app/helper/uploadNewItem';
+import { useSelector, useDispatch } from 'react-redux';
+import { getCatagoriesAction } from '../../redux/actions/productAction';
 let imgFile=null;
 let allCatagory=[];
 const NewItem=(props)=>{
@@ -15,17 +17,24 @@ const NewItem=(props)=>{
   const [stock,setStock]=useState(''); 
   const [description,setDescription]=useState(''); 
   const [imageSet,setImageSet]=useState(false);
-  const [loadCatagory,SetLoadCatagory]=useState(false);
   const [showError,setShowError]=useState(false);
   const [successMessage,showSuccessMessage]=useState(false);
-  if(!loadCatagory){
-    getCatagories().then(res=>{
-      console.log(res);
-      allCatagory=res;
-     
-    }
-    ).then(()=>SetLoadCatagory(true))
+  const [loading,setLoading]=useState(false);
+  const catagories=useSelector(state=>state.catagoryReducer);
+const [loaded,setLoaded]=useState(false);
+  const dispatch=useDispatch();
+  if(!catagories.loaded && !catagories.loading){
+    getCatagoriesAction(dispatch)
+    if(!loaded){
+      setLoading(true);
+      setLoaded(true)}
+  }else if(catagories.loaded){
+    allCatagory=catagories.catagories;
+    if(loaded){
+    setLoading(false);
+    setLoaded(false);}
   }
+
 
   const imageBox={
     border: '8px solid',
@@ -59,8 +68,6 @@ const selectImage=()=>{
     setDescription('');
  }
  const handleSubmit=()=>{
-  console.log(catagory);
-  console.log(allCatagory);
   showSuccessMessage(false);
   if(name.length>3 && !isNaN(price) && !isNaN(discount) && !isNaN(stock) && catagory.length>0 && imgFile&&( imgFile.type==='image/jpeg'|| imgFile.type==='image/png')){
     setShowError(false);
@@ -90,6 +97,9 @@ const selectImage=()=>{
   }else{
     setShowError(true)
   }
+}
+if(loading){
+  return (<Loading size={100}/>)
 }
 return (
     <Form>

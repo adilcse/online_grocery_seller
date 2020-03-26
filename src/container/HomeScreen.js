@@ -3,24 +3,21 @@ import { Row, Container, Alert } from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import updateItemById from '../app/helper/updateItemById';
-import getSellerItems from '../app/helper/getSellerItems';
 import { deleteSellerItems } from '../app/helper/deleteSellerItems';
+import { getSellerItemAction } from '../redux/actions/productAction';
+import Loading from '../components/Loading';
 const HomeScreen = ()=>{
-const [products,setProducts]=useState([]);
+//const [products,setProducts]=useState([]);
 const [itemsLoaded,setItemsLoaded]=useState(false);
 const sellerId=useSelector(state=>state.userLogin.userId);
 const [showError,setShowError]=useState(false);
 const [showSuccess,setShowSuccess]=useState(false);
-if(!itemsLoaded){
-getSellerItems(sellerId,false,10000).then(res=>{
-  if(res)
-    setProducts(res);
-  else
-    setShowError(true);
-  setItemsLoaded(true);
-})
+const allProducts=useSelector(state=>state.productReducer);
+const dispatch=useDispatch();
+if(!allProducts.loaded && !allProducts.loading){
+getSellerItemAction(dispatch,sellerId);
 }
 const deleteItem=(items)=>{
   console.log(items)
@@ -86,6 +83,9 @@ const deleteItem=(items)=>{
         beforeSaveCell: onBeforeSaveCell, // a hook for before saving cell
         afterSaveCell: onAfterSaveCell  // a hook for after saving cell
       };
+      if(allProducts.loading)
+        return(<Loading size={100}/>);
+     else if(allProducts.loaded && !allProducts.loading)
 return(
     <Container>
         <Row>
@@ -102,7 +102,7 @@ return(
        </Alert>:<></>}
   </Row>
   <Row className='text-left'>
-  <BootstrapTable data={products}  pagination deleteRow={true} selectRow={{mode:'checkbox'}}  options={{sortIndicator:true,afterDeleteRow:deleteItem}} cellEdit={ cellEditProp }>
+  <BootstrapTable data={allProducts.products}  pagination deleteRow={true} selectRow={{mode:'checkbox'}}  options={{sortIndicator:true,afterDeleteRow:deleteItem}} cellEdit={ cellEditProp }>
         <TableHeaderColumn isKey dataField='id' dataSort={ true } hidden  caretRender={ getCaret } editable={false}>Product ID</TableHeaderColumn>
         <TableHeaderColumn dataField='name' dataSort  caretRender={ getCaret }>Product Name</TableHeaderColumn>
         <TableHeaderColumn dataField='price' dataSort  caretRender={ getCaret }>MRP</TableHeaderColumn>
@@ -112,5 +112,10 @@ return(
   </Row>
     </Container>
 )
+else{
+  return(
+    <Loading size={100}/>
+  )
+}
 }
 export default HomeScreen;

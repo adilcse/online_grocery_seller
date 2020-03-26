@@ -7,6 +7,8 @@ import HeaderCard from './HeaderCard';
 import { getItemsByIds } from '../../app/helper/getItemsByIds';
 import { arrayMergeByObject } from '../../app/helper/arrayMergeByObject';
 import { DETAILS } from '../../app/AppConstant';
+import { useSelector, useDispatch } from 'react-redux';
+import { getSellerItemAction } from '../../redux/actions/productAction';
 const OrderCard=(props)=>{
     const{order}=props;
     const [loaded,setLoaded]=useState(false);
@@ -14,6 +16,8 @@ const OrderCard=(props)=>{
     const orderStatus=order.status;
     const [selectedItems,setSelectedItems]=useState(order.items.filter(el=>el.accept).length);
     const [showError,setShowError]=useState(false);
+    const {products}=props;
+    const dispatch=useDispatch();
     const itemStatus=(e)=>{
         let Nitem=[...item];
        const i= Nitem.findIndex(el=>el.id===e.target.value);
@@ -31,12 +35,16 @@ const OrderCard=(props)=>{
         props.orderAcceptReject(order.id,status,item);
     }
   if(order && !loaded){
-      
       const ids=order.items.map(el=>el.id);
-      getItemsByIds(ids).then(res=>{
+      if(products.loaded && !products.loading){
+      getItemsByIds(ids,products.products).then(res=>{
          setItem(arrayMergeByObject(res,item,'id'))
-      })
-        setLoaded(true);}
+      });
+      setLoaded(true);
+    }else if(!products.loading && !products.loaded){
+        getSellerItemAction(dispatch,props.sellerId);
+}
+     }
     const viewDetails=()=>{
         props.changePage(DETAILS,{...order,items:arrayMergeByObject(order.items,item,'id')});
     }

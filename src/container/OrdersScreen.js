@@ -1,66 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React,{ useState} from 'react'
 import { Container, Row } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
-import {getOrders} from '../app/helper/getOrders';
+import { useSelector, useDispatch } from 'react-redux';
 import  OrdersList  from "../components/orders/OrderList";
 import OrderDetails from '../components/orders/OrderDetails';
 import { ORDER } from '../app/AppConstant';
 import Loading from '../components/Loading';
 import { orderStatusUpdate } from '../app/helper/orderStatusUpdate';
 import { documentUpdate } from '../app/helper/documentUpdate';
+import { getOrdersAction, changeOrderDetails } from '../redux/actions/orderAction';
 
 const OrdersScreen=(props)=>{
     const sellerId=useSelector(state=>state.userLogin.userId);
-    const [source,setSource]=useState([]);
-    const [loading,setLoading]=useState(true);
     const [currentPage,setCurrentPage]=useState(ORDER);
-    const [orderDetails,setorderDetails]=useState({});
-    const updateArrayElement=(array, newItem, atIndex)=>{
-      return array.map((item, index) => index === atIndex ? newItem : item);
-  }
-  const insertArrayElement = (arr, index,newItems) => 
-        [ ...arr.slice(0, index),newItems, ...arr.slice(index)];
-        const orderTotal=(item)=>{
-          let total=0;
-         item.forEach(el=>{
-              if(el.accept){
-                   total+= el.price*el.quantity;  
-                  }  
-          });
-          const deliveryCharges=0;
-          return {
-            subTotal:total,
-            deliveryCharges:deliveryCharges,
-            itemCounts:item.length,
-            total:total+deliveryCharges
-                };
+    const orders=useSelector(state=>state.getOrders);
+    const dispatch=useDispatch();
+
+      if(!orders.loaded && !orders.loading){
+        getOrdersAction(dispatch,sellerId);
       }
-        useEffect(() => {
-          //Subscribe: firebase channel
-          const getData=(snapshot)=>{
-            setLoading(true);
-            console.log(snapshot)
-             snapshot.forEach(element => {
-               const data={...element.doc.data(),id:element.doc.id,total:orderTotal(element.doc.data().items)};
-                 if(element.type==='added'){
-                  setSource(source=>insertArrayElement(source,element.newIndex,data));
-                 }else if(element.type==='modified'){
-                  setorderDetails(details=>{return {...details,status:data.status}});
-                  setSource(s=>updateArrayElement(s,data,element.oldIndex));
-                 }else if(element.type==='removed'){
-                  setSource(s=>s.filter((_, i) => i !== element.oldIndex));
-                 }
-             });
-             setLoading(false);
-          }
-          const unsubscribe=getOrders(sellerId,getData);
-          return unsubscribe;
-             
-       },[sellerId]);
+     
 const changePage=(page,data={})=>{
-  console.log(data)
+  changeOrderDetails(dispatch,data);
   setCurrentPage(page);
-  setorderDetails(data);
 }
 /**
  * Update the order status in database
@@ -79,16 +40,15 @@ const orderAcceptReject=(orderId,status,item)=>{
 const orderUpdate=(col,id,data)=>{
   documentUpdate(col,id,data)
 }
-  if(loading){
+  if(orders.loading){
    return <Loading size={100}/>
   }else{
-    console.log(source);
     return(
       <Container>
           <Row>
             {currentPage===ORDER?  
-              <OrdersList orders={source} changePage={changePage} orderAcceptReject={orderAcceptReject}/>
-              :<OrderDetails changePage={changePage} details={orderDetails} orderUpdate={orderUpdate}></OrderDetails>}
+              <OrdersList orders={orders.orders} changePage={changePage} orderAcceptReject={orderAcceptReject} sellerId={sellerId}/>
+              :<OrderDetails changePage={changePage} details={orders.details} orderUpdate={orderUpdate}></OrderDetails>}
           </Row>
       </Container>
     )}
