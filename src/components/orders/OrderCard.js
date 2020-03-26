@@ -7,7 +7,7 @@ import HeaderCard from './HeaderCard';
 import { getItemsByIds } from '../../app/helper/getItemsByIds';
 import { arrayMergeByObject } from '../../app/helper/arrayMergeByObject';
 import { DETAILS } from '../../app/AppConstant';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { getSellerItemAction } from '../../redux/actions/productAction';
 const OrderCard=(props)=>{
     const{order}=props;

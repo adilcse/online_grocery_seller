@@ -9,8 +9,6 @@ import { deleteSellerItems } from '../app/helper/deleteSellerItems';
 import { getSellerItemAction } from '../redux/actions/productAction';
 import Loading from '../components/Loading';
 const HomeScreen = ()=>{
-//const [products,setProducts]=useState([]);
-const [itemsLoaded,setItemsLoaded]=useState(false);
 const sellerId=useSelector(state=>state.userLogin.userId);
 const [showError,setShowError]=useState(false);
 const [showSuccess,setShowSuccess]=useState(false);
