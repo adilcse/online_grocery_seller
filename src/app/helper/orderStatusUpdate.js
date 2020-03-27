@@ -18,7 +18,7 @@ import {documentUpdate} from './documentUpdate';
     const Norder={
         "items":Nitem,
         "status":status?ACCEPT:REJECT,
-        "total.refundAmmount":tot,
+        "total.refundAmount":tot,
         "total.rejectItems":count
     }
    
