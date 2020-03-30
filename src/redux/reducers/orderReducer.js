@@ -15,15 +15,15 @@ switch(action.type){
     case GET_ORDER_SUCCESS:
         {
             const snapshot=action.payload;
-            let order=[];
+            let order=[...state.orders];
             let details={...state.details}
             snapshot.forEach(element => {
                 const data={...element.doc.data(),id:element.doc.id,total:orderTotal(element.doc.data().items)};
                   if(element.type==='added'){
-                   order=insertArrayElement(state.orders,element.newIndex,data);
+                   order=insertArrayElement(order,element.newIndex,data);
                   }else if(element.type==='modified'){
                    details={...details,status:data.status};
-                   order=updateArrayElement(state.orders,data,element.oldIndex);
+                   order=updateArrayElement(order,data,element.oldIndex);
                   }else if(element.type==='removed'){
                   order=state.orders.filter((_, i) => i !== element.oldIndex);
                   }

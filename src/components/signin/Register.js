@@ -33,14 +33,21 @@ const Register = (props)=>{
       let email=document.getElementById('email');
       let password=document.getElementById('password');
       let cpassword=document.getElementById('cpassword');
-
+      let number=document.getElementById('mobile');
+      if(number.value.length!==10 || isNaN(number.value)){
+         number.classList.add('is-invalid');
+         number.classList.remove('is-valid');
+      }else{
+         number.classList.remove('is-invalid');
+         number.classList.add('is-valid');
+      }
       if(validateField(name) && validateField(email) && validateField(password)){
          console.log('registering')
          if(password.value===cpassword.value){
             cpassword.classList.remove('is-invalid');
             cpassword.classList.add('is-valid');
             if(props.address)
-                 RegisterWithFirebase(dispatch,name.value,email.value,password.value,address);
+                 RegisterWithFirebase(dispatch,name.value,email.value,password.value,address,number.value);
             else{
                 setAddress(false);
             }
@@ -57,9 +64,7 @@ const Register = (props)=>{
       }else{
          return(
             <div>
-                <div className="col-md-12 text-center mb-3">
-                  <button type='button' className=" btn btn-block mybtn btn-info tx-tfm" onClick={()=>props.change(ADDRESS)}>Select Address</button>
-               </div>
+
                <div className="col-md-12 text-center mb-3">
                   <button type='button' className=" btn btn-block mybtn btn-primary tx-tfm" onClick={handelSubmit}>Get Started</button>
                </div>
@@ -80,7 +85,7 @@ const Register = (props)=>{
             user.error? <ErrorMessage isError={user.error} message={user.error.message}/>:<></>
             
            }
-           {address?<></>:<ErrorMessage isError={true} message='plese select address'/>}
+           {address?<></>:<ErrorMessage className='text-center' isError={true} message='please select address'/>}
           
 			      <div className="myform form ">
                         <div className="logo mb-3">
@@ -88,12 +93,22 @@ const Register = (props)=>{
                               <h1 >Signup</h1>
                            </div>
                         </div>
+                        <div className="col-md-12 text-center mb-3">
+                           <button type='button' className=" btn btn-block mybtn btn-info tx-tfm" onClick={()=>props.change(ADDRESS)}>Select Address</button>
+                        </div>
                         <form>
                            <div className="form-group">
                               <label htmlFor="firstname">Name</label>
-                              <input type="text"  name="firstname" required className="form-control invlid" id="firstname" aria-describedby="emailHelp" placeholder="Enter Firstname" />
+                              <input type="text"  name="firstname" required className="form-control invlid" id="firstname" aria-describedby="emailHelp" placeholder="Enter Name" />
                               <div className="invalid-feedback">
                                  Please Enter valid name.
+                              </div>
+                           </div>
+                           <div className="form-group">
+                              <label htmlFor="mobile">Mobile Number</label>
+                              <input type="text"  name="mobile" required className="form-control invlid" id="mobile" placeholder="Enter Number" />
+                              <div className="invalid-feedback">
+                                 Please Enter valid Number.
                               </div>
                            </div>
                            <div className="form-group">

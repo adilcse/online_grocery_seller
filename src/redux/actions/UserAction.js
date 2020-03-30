@@ -35,11 +35,11 @@ export const EmailLogin=(dispatch,email,password)=>{
  * @param {*} email email id of the user
  * @param {*} password password to set
  */
-export const Register =(dispatch,name,email,password,address)=>{
+export const Register =(dispatch,name,email,password,address,number)=>{
 dispatch({type:REGISTER_USER_PENDING});
 firebase.auth().createUserWithEmailAndPassword(email, password)
 .then((data)=>{
-  addUserToDb(dispatch,data.user.uid,data.user.email,name,address);
+  addUserToDb(dispatch,data.user.uid,data.user.email,name,address,number);
 })
 .catch(function(error) {
   if(error.code==='auth/email-already-in-use'){
@@ -100,7 +100,7 @@ export const ValidateUser=(dispatch,user,by='email')=>{
     console.log("Error getting document:", error);
 });
 }
-const addUserToDb=(dispatch,userId,email,name,address)=>{
+const addUserToDb=(dispatch,userId,email,name,address,number)=>{
   const seller={
     email: email,
     name:name,
@@ -108,6 +108,7 @@ const addUserToDb=(dispatch,userId,email,name,address)=>{
     id:userId,
     dateOfJoining:firebase.firestore.FieldValue.serverTimestamp(),
     address:address.formatted_address,
+    mobile:number,
   }
   const position=geo.point(address.latLng.latitude,address.latLng.longitude);
   db.collection("seller").doc(userId).set({

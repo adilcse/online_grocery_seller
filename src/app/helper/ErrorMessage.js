@@ -7,11 +7,9 @@ import { Alert } from 'react-bootstrap';
  const ErrorMessage=(props)=>{
     if(props.isError)
     return(
-       <div className={props.className}>
     <Alert variant='danger'>
         <Alert.Heading>{props.message}</Alert.Heading>
    </Alert>
-   </div>
     )
     else 
        return <></>
