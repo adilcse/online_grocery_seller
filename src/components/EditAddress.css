@@ -4,3 +4,9 @@
     width: calc(100% - 34px);
 
 }
+
+@media (max-width: 480px) {
+    .mt-xs-5 {
+        margin-top: 3rem;
+    }
+}

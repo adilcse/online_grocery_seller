@@ -4,6 +4,7 @@ import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 import { getAddressByLatLng } from '../app/helper/getAddressByLatLng';
 import { PAGE_MAP, PAGE_EDIT_ADDRESS } from '../app/AppConstant';
 import EnterAddress from './EnterAddress';
+import  './EditAddress.css';
 const GpsAddress=(props)=>{
     const [marker,setMarker]=useState(false);
     const [center,setCenter]=useState({ lat: 20.3423744, lng: 85.8161152});
@@ -201,7 +202,7 @@ const GpsAddress=(props)=>{
                 {myAddress?<ViewAddress/>:<></>}
             </div>
         
-                    <input type='text' id='searchbox' className='form-control col-md-4 mt-2' size="30" placeholder="Search place in map"/>
+                    <input type='text' id='searchbox' className='form-control col-md-4 mt-md-2 col-xs-3 mt-xs-5' size="30" placeholder="Search place in map"/>
         
                 <div>
             <Map
