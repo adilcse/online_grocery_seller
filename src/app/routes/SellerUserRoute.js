@@ -9,6 +9,7 @@ const AddItemScreen=lazy(()=>import("../../container/AddItemScreen"));
 const OrdersScreen=lazy(()=>import("../../container/OrdersScreen"));
 const Home = lazy(()=>import('../../container/HomeScreen'));
 const SellerUserRoute=()=>{
+  document.title='welcome seller';
 return(
 
       <div className="App text-center">
