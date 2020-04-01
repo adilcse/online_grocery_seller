@@ -25,7 +25,9 @@ const LoginScreen=()=>{
         return(
         <div className='text-center'>
        <h1> Sorry!!! you are not a seller...</h1>
-           {tab===LOGIN? <Login change={setTab}/> :<Register change={setTab} address={address} details={details}/>}
+           {tab===LOGIN? 
+            <Login change={setTab}/> :
+            <Register change={setTab} address={address} details={details} />}
         </div> 
         )
     }else if(!user.loggedIn){
@@ -34,7 +36,9 @@ const LoginScreen=()=>{
         }
         return(
             <div className='mt-3'>
-                 {tab===LOGIN? <Login change={setTab}/> :<Register change={setTab}  address={address} details={details}/>}
+                 {tab===LOGIN? 
+                 <Login change={setTab}/> :
+                 <Register change={setTab}  address={address} details={details}/>}
             </div>
         )
     }else{

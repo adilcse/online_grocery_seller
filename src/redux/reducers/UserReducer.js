@@ -10,9 +10,6 @@ import {
     REGISTER_USER_FAILED,
     PLEASE_REGISTER_FIRST,
  } from "../../app/ActionConstant";
- import { 
-    USER_TYPE_SELLER
- } from "../../app/AppConstant";
  let initialState={
      userId:null,
      email:null,
@@ -22,14 +19,14 @@ import {
      loggingIn:false,
      error:false,
      registerByGoogle:false,
-     coordinates:null
-
+     coordinates:null,
+     registered:false
 
  }
 export const userLogin=(state=initialState,action={})=>{
      switch(action.type){
          case LOGIN_USER_PENDING:
-             return {...state,loggingIn:true,loggedIn:false};
+             return {...state,loggingIn:true,loggedIn:false, registered:false};
          case LOGIN_USER_SUCCESS:
             return{...state,
                 userId:action.payload.uid,
@@ -41,28 +38,28 @@ export const userLogin=(state=initialState,action={})=>{
                 address:action.payload.address,
                 error:false,
                 coordinates:action.payload.position.geopoint,
+                registered:false
             } 
        
         case LOGIN_USER_FAILED:
-            return {...state,...initialState,error:action.payload?action.payload:state.error};
+            return {...state,...initialState,error:action.payload?action.payload:state.error, registered:false};
         case LOGOUT_USER_FAILED:
             return {...state,error:action.error}   
         case LOGOUT_USER_SUCCESS:
             return {...initialState,error:state.error};
         case LOGOUT_USER_PENDING:
-            return {...state,loggingIn:true}        
+            return {...state,loggingIn:true,  registered:false}        
         
         case REGISTER_USER_PENDING:
-            return {...state,loggingIn:true,loggedIn:false};
+            return {...state,loggingIn:true,
+                    loggedIn:false,  
+                    registered:false,
+                    registerError:false};
         case REGISTER_USER_SUCCESS:
             return{...state,
-                userId:action.payload.uid,
-                email:action.payload.email,
                 loggingIn:false,
-                loggedIn:true,
-                userType:USER_TYPE_SELLER,
-           
-                error:false
+                registered:true,
+                registerError:false
             } 
         case REGISTER_USER_FAILED:
             return{...state,
@@ -70,12 +67,14 @@ export const userLogin=(state=initialState,action={})=>{
                 userName:null, 
                 loggedIn:false,
                 loggingIn:false,
-                error:action.payload,  
+                registerError:action.payload,  
+                registered:false
             }  
         case PLEASE_REGISTER_FIRST:
             return{...state,
                 registerByGoogle:true,
-                userDetails:action.payload
+                userDetails:action.payload,
+                registered:false
             }
         default:    
             return state;

@@ -8,6 +8,7 @@ import { LOGIN,ADDRESS } from '../../app/AppConstant';
 const Register = (props)=>{
    const dispatch=useDispatch();
    const user=useSelector(state=>state.userLogin);
+   const registered=useSelector(state=>state.userLogin.registered)
    const [address,setAddress]=useState(props.address);
 
    //validate data
@@ -22,8 +23,6 @@ const Register = (props)=>{
             data.classList.add('is-valid');
             return true;   
          }
-            
-
    }
    if(user.userId){
       return <Redirect to='/'/>
@@ -64,7 +63,6 @@ const Register = (props)=>{
       }else{
          return(
             <div>
-
                <div className="col-md-12 text-center mb-3">
                   <button type='button' className=" btn btn-block mybtn btn-primary tx-tfm" onClick={handelSubmit}>Get Started</button>
                </div>
@@ -78,12 +76,14 @@ const Register = (props)=>{
          )
       }
    } 
+   console.log(registered);
+   if(registered)
+      props.change(LOGIN);
     return(
 
         <div id="second">
            {
-            user.error? <ErrorMessage isError={user.error} message={user.error.message}/>:<></>
-            
+            user.registeredError? <ErrorMessage isError={user.registeredError} message={user.registeredError}/>:<></>
            }
            {address?<></>:<ErrorMessage className='text-center' isError={true} message='please select address'/>}
           

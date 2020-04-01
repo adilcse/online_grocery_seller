@@ -10,7 +10,7 @@ const geo = geofirex.init(firebase);
  * @param {'test@test.com'} email email for user login
  * @param {'*******'} password user's pasword
  */
-
+let registering=false;
 export const EmailLogin=(dispatch,email,password)=>{
     dispatch({ type: LOGIN_USER_PENDING});
     //handles user signin
@@ -37,13 +37,13 @@ export const EmailLogin=(dispatch,email,password)=>{
  */
 export const Register =(dispatch,name,email,password,address,number)=>{
 dispatch({type:REGISTER_USER_PENDING});
+registering=true;
 firebase.auth().createUserWithEmailAndPassword(email, password)
 .then((data)=>{
   addUserToDb(dispatch,data.user.uid,data.user.email,name,address,number);
 })
 .catch(function(error) {
-  if(error.code==='auth/email-already-in-use'){
-  }
+  registering=false;
   console.log(error);
   dispatch({type:REGISTER_USER_FAILED,payload:{...error}});
   // ...
@@ -61,13 +61,13 @@ export const Logout=(dispatch)=>{
         dispatch({LOGOUT_USER_FAILED});
       });
 }
-export const LoginStatus=(dispatch)=>{
+export const LoginStatus=async(dispatch)=>{
   console.log('status pending')
   dispatch({ type: LOGIN_USER_PENDING});
   firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
+    if (user && !registering) {
         ValidateUser(dispatch,user);
-    } else {
+    } else if(!user) {
       // No user is signed in.
       dispatch({type:LOGIN_USER_FAILED})
 
@@ -75,7 +75,7 @@ export const LoginStatus=(dispatch)=>{
   });
 }
 
-export const ValidateUser=(dispatch,user,by='email')=>{
+export const ValidateUser=async(dispatch,user,by='email')=>{
   db.collection("seller").doc(user.uid).get().then(function(doc) {
     if (doc.exists) {
      if(doc.data().userType===USER_TYPE_SELLER)
@@ -100,7 +100,7 @@ export const ValidateUser=(dispatch,user,by='email')=>{
     console.log("Error getting document:", error);
 });
 }
-const addUserToDb=(dispatch,userId,email,name,address,number)=>{
+const addUserToDb=async(dispatch,userId,email,name,address,number)=>{
   const seller={
     email: email,
     name:name,
@@ -115,10 +115,12 @@ const addUserToDb=(dispatch,userId,email,name,address,number)=>{
    ...seller,position
 })
 .then(function() {
-   dispatch({type:REGISTER_USER_SUCCESS,payload:{uid:userId,email:email}});
-
+  registering=false;
+   dispatch({type:REGISTER_USER_SUCCESS,payload:seller});
+   Logout(dispatch);
 })
 .catch(function(error) {
+  registering=false;
     console.error("Error writing document: ", error);
     dispatch({type:REGISTER_USER_FAILED,payload:error})
 })
