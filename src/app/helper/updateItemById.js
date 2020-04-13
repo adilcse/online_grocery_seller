@@ -1,12 +1,15 @@
-import { db } from "../../firebaseConnect";
+import { updateItemAPI } from "./laravelAPI";
 
-const updateItemById=(itemId,cellName,cellValue)=>{
-return db.collection('sellerItems').doc(itemId)
-.update({
-    [cellName]:cellValue
-}).then(()=>{
-    return true;
+const updateItemById=(user,itemId,cellName,cellValue)=>{
+return updateItemAPI(user,itemId,cellName,cellValue)
+.then((res)=>{
+    console.log('not error',res)
+    if(!res.error && res.status===1)
+        return true;
+    else
+        throw res.error;
 }).catch(()=>{
+    console.log('catching');
     return false;
 })
 }

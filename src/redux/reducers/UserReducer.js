@@ -18,8 +18,6 @@ import {
      userType:null,
      loggingIn:false,
      error:false,
-     registerByGoogle:false,
-     coordinates:null,
      registered:false
 
  }
@@ -34,10 +32,11 @@ export const userLogin=(state=initialState,action={})=>{
                 loggingIn:false,
                 loggedIn:true, 
                 name:action.payload.name,
-                userType:action.payload.userType,
+                id:action.payload.id,
+                userType:action.payload.current_status,
                 address:action.payload.address,
+                user:action.payload.user,
                 error:false,
-                coordinates:action.payload.position.geopoint,
                 registered:false
             } 
        
@@ -72,7 +71,6 @@ export const userLogin=(state=initialState,action={})=>{
             }  
         case PLEASE_REGISTER_FIRST:
             return{...state,
-                registerByGoogle:true,
                 userDetails:action.payload,
                 registered:false
             }

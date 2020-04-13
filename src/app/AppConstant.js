@@ -1,5 +1,6 @@
-export const USER_TYPE_SELLER='2';
-export const SELLER_VERIFICATION_PENDING='4';
+export const ACTIVE='ACTIVE';
+export const BLOCKED='BLOCKED';
+
 export  const LOGIN='LOGIN';
 export const REGISTER='REGISTER';
 export const ADDRESS='ADDRESS';
@@ -26,3 +27,5 @@ export const INPUT_ALTERNATE='INPUT_ALTERNATE';
 
 export const PAGE_MAP='PAGE_MAP';
 export const PAGE_EDIT_ADDRESS='PAGE_EDIT_ADDRESS';
+
+export const LARAVEL_API_URL='http://localhost:8000';

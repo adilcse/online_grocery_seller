@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Login from '../components/signin/Login';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router';
-import { USER_TYPE_SELLER, LOGIN, ADDRESS, REGISTER } from '../app/AppConstant';
+import { ACTIVE, LOGIN, ADDRESS, REGISTER } from '../app/AppConstant';
 import Register from '../components/signin/Register';
 import GpsAddress from '../components/GpsAddress';
 let changed=false;
@@ -21,7 +21,7 @@ const LoginScreen=()=>{
         setAddress(address);
         setTab(REGISTER);
     }
-    if(user.loggedIn && user.userType!==USER_TYPE_SELLER){
+    if(user.loggedIn && user.userType!==ACTIVE){
         return(
         <div className='text-center'>
        <h1> Sorry!!! you are not a seller...</h1>

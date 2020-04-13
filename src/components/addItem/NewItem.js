@@ -21,7 +21,7 @@ const NewItem=(props)=>{
   const [successMessage,showSuccessMessage]=useState(false);
   const [loading,setLoading]=useState(false);
   const catagories=useSelector(state=>state.catagoryReducer);
-const [loaded,setLoaded]=useState(false);
+  const [loaded,setLoaded]=useState(false);
   const dispatch=useDispatch();
   if(!catagories.loaded && !catagories.loading){
     getCatagoriesAction(dispatch)
@@ -75,20 +75,22 @@ const selectImage=()=>{
     catagory.forEach(item=>{
       cat.push(allCatagory.find((element)=>{
         return element.name===item.name;
-      }).catId)
+      }).id)
     }); 
+    if(cat.length<1)
+      return setShowError(true);
     let data={
-      sellerId:props.sellerId,
       name:name,
       price:parseInt(price),
       discount:parseInt(discount),
       stock:parseInt(stock),
-      catagory:cat,
+      catagory:cat[0],
       image:imgFile,
       description:description
     }
     console.log(data);
-    uploadNewItem(data).then(res=>{
+    uploadNewItem(props.user,data)
+    .then(res=>{
       if(res){
         clear();
         showSuccessMessage(true)
@@ -125,12 +127,12 @@ return (
         <Typeahead
         id="catagorySelected"
         labelKey="name"
-        multiple={true}
         onChange={setCatagory}
         options={allCatagory}
         placeholder="Select a catagory.."
         selected={catagory}
       />
+      
         </Form.Group>
     </Form.Row>
     <Form.Row>

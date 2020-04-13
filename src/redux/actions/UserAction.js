@@ -1,8 +1,7 @@
 import { LOGOUT_USER_PENDING, LOGOUT_USER_SUCCESS,LOGOUT_USER_FAILED, LOGIN_USER_PENDING, LOGIN_USER_FAILED, LOGIN_USER_SUCCESS, REGISTER_USER_SUCCESS, REGISTER_USER_FAILED, REGISTER_USER_PENDING } from "../../app/ActionConstant";
-import {firebase, db } from '../../firebaseConnect';
-import {  SELLER_VERIFICATION_PENDING, USER_TYPE_SELLER } from "../../app/AppConstant";
-import * as geofirex from 'geofirex';
-const geo = geofirex.init(firebase);
+import {firebase } from '../../firebaseConnect';
+import {  PENDING, ACTIVE } from "../../app/AppConstant";
+import { registerSellerAPI, loginSellerAPI } from "../../app/helper/laravelAPI";
 /**
  * Tries to signin with given email and password
  * if verifies logsin the user
@@ -36,11 +35,12 @@ export const EmailLogin=(dispatch,email,password)=>{
  * @param {*} password password to set
  */
 export const Register =(dispatch,name,email,password,address,number)=>{
+  console.log(address)
 dispatch({type:REGISTER_USER_PENDING});
 registering=true;
 firebase.auth().createUserWithEmailAndPassword(email, password)
 .then((data)=>{
-  addUserToDb(dispatch,data.user.uid,data.user.email,name,address,number);
+  addUserToDb(dispatch,data.user,name,address,number);
 })
 .catch(function(error) {
   registering=false;
@@ -76,44 +76,32 @@ export const LoginStatus=async(dispatch)=>{
 }
 
 export const ValidateUser=async(dispatch,user,by='email')=>{
-  db.collection("seller").doc(user.uid).get().then(function(doc) {
-    if (doc.exists) {
-     if(doc.data().userType===USER_TYPE_SELLER)
-          dispatch({type:LOGIN_USER_SUCCESS,payload:{...user,...doc.data()}});
+  // db.collection("seller").doc(user.uid).get()
+  loginSellerAPI(user)
+  .then(function(doc) {
+     if(doc.current_status===ACTIVE)
+          dispatch({type:LOGIN_USER_SUCCESS,payload:{user:user,...doc}});
       else{
         dispatch({type:LOGIN_USER_FAILED,payload:{code:'Seller Activation pending. please contact admin.'}});
         Logout(dispatch);
-
       }
-      
-    } else {
-        // doc.data() will be undefined in this case
-        console.log("use not exist...");
-       
-          dispatch({type:LOGIN_USER_FAILED,payload:{code:'user not exist'}});
-          Logout(dispatch);
-        
-
-    }
 }).catch(function(error) {
-  dispatch({type:LOGIN_USER_FAILED,payload:{code:'no Internet'}});
+  dispatch({type:LOGIN_USER_FAILED,payload:{code:'Seller Activation pending. please contact admin.'}});
     console.log("Error getting document:", error);
+    Logout(dispatch);
 });
 }
-const addUserToDb=async(dispatch,userId,email,name,address,number)=>{
+const addUserToDb=async(dispatch,user,name,address,number)=>{
   const seller={
-    email: email,
+    email: user.email,
     name:name,
-    userType:SELLER_VERIFICATION_PENDING,
-    id:userId,
-    dateOfJoining:firebase.firestore.FieldValue.serverTimestamp(),
-    address:address.formatted_address,
+    current_status:PENDING,
+    uid:user.uid,
+    address:address,
     mobile:number,
   }
-  const position=geo.point(address.latLng.latitude,address.latLng.longitude);
-  db.collection("seller").doc(userId).set({
-   ...seller,position
-})
+
+registerSellerAPI(user,seller)
 .then(function() {
   registering=false;
    dispatch({type:REGISTER_USER_SUCCESS,payload:seller});
@@ -122,6 +110,11 @@ const addUserToDb=async(dispatch,userId,email,name,address,number)=>{
 .catch(function(error) {
   registering=false;
     console.error("Error writing document: ", error);
+    user.delete().then(function() {
+      console.log('user deleted');
+    }).catch(function(error) {
+      // An error happened.
+    });
     dispatch({type:REGISTER_USER_FAILED,payload:error})
 })
 }

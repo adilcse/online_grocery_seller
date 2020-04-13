@@ -4,10 +4,10 @@ import NewItem from '../components/addItem/NewItem';
 import './AddItem.css';
 import { useSelector } from 'react-redux';
 const AddItemScreen=()=>{
-  const sellerId=useSelector(state=>state.userLogin.userId);
+  const user=useSelector(state=>state.userLogin.user);
 return(
     <Container >
-       <NewItem sellerId={sellerId}/>
+       <NewItem  user={user}/>
 </Container>
 )
 }

@@ -157,7 +157,7 @@ const GpsAddress=(props)=>{
        
         <h2>{myAddress}</h2>
         <div className='mb-4'>
-        <Button variant='info' onClick={()=>props.setAddress({...fullAddress,latLng:marker})}> Select this Location</Button>
+        <Button variant='info' onClick={()=>props.setAddress({...fullAddress,lat:marker.latitude,lng:marker.longitude})}> Select this Location</Button>
         <Button variant='warning' className='ml-3' onClick={()=>setPage(PAGE_EDIT_ADDRESS)}>Edit Address</Button>
         </div>
        

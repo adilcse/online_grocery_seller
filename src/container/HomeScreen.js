@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Container, Alert } from 'react-bootstrap';
+import { Row, Container, Alert, Button } from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import 'react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import { IoIosArrowUp, IoIosArrowDown } from 'react-icons/io';
@@ -9,19 +9,18 @@ import { deleteSellerItems } from '../app/helper/deleteSellerItems';
 import { getSellerItemAction } from '../redux/actions/productAction';
 import Loading from '../components/Loading';
 const HomeScreen = ()=>{
-const sellerId=useSelector(state=>state.userLogin.userId);
+const user=useSelector(state=>state.userLogin.user);
 const [showError,setShowError]=useState(false);
 const [showSuccess,setShowSuccess]=useState(false);
 const allProducts=useSelector(state=>state.productReducer);
 const dispatch=useDispatch();
 if(!allProducts.loaded && !allProducts.loading){
-getSellerItemAction(dispatch,sellerId);
+getSellerItemAction(dispatch,user);
 }
-const deleteItem=(items)=>{
-  console.log(items)
-  deleteSellerItems(sellerId,items).then(()=>{
-    showSuccess(true);
-  });
+const deleteItem=(ids,items)=>{
+
+  deleteSellerItems(user,ids,items)
+   
 }
     const getCaret=(direction)=> {
         if (direction === 'asc') {
@@ -38,21 +37,10 @@ const deleteItem=(items)=>{
             <IoIosArrowUp/>
         );
       }
-      const onAfterSaveCell=(row, cellName, cellValue)=> {
-      updateItemById(row.id,cellName,cellValue).then(res=>{
-        if(res){
-          setShowSuccess(true);
-          setShowError(false)
-        }
-         else{
-           setShowError(true)
-         setShowSuccess(false) }
-      });
-      }
-      
-      const onBeforeSaveCell=(row, cellName, cellValue)=> {
+      const onBeforeSaveCell=async(row, cellName, cellValue)=> {
         // You can do any validation on here for editing value,
         // return false for reject the editing
+        const status=()=>{
         switch(cellName){
           case 'price':
             if(!isNaN(cellValue) && parseInt(cellValue)>0)
@@ -75,32 +63,66 @@ const deleteItem=(items)=>{
         }
         return false;
       }
+      if(status()){
+       const res= await updateItemById(user,row.id,cellName,cellValue)
+        .then(res=>{
+          if(res){
+            setShowSuccess(true);
+            setShowError(false);
+            return true;
+          }
+
+           else{
+             setShowError(true)
+           setShowSuccess(false) 
+          return false;}
+        });
+        if(res)
+          return true;
+        else
+          return false;
+      }else{
+        return false;
+      }
+    }
       const cellEditProp = {
         mode: 'dbclick',
         blurToSave: true,
         beforeSaveCell: onBeforeSaveCell, // a hook for before saving cell
-        afterSaveCell: onAfterSaveCell  // a hook for after saving cell
+    
       };
       if(allProducts.loading)
         return(<Loading size={100}/>);
      else if(allProducts.loaded && !allProducts.loading)
 return(
     <Container>
+      <Row>
+        <Button onClick={()=>getSellerItemAction(dispatch,user)} variant='warning'>Refresh</Button>
+      </Row>
         <Row>
+
         <h2>
             Items in My Store:
         </h2>
+
         </Row>
         <Row>
        {showError?<Alert variant='danger'>
-         Error getting data
+         something went wrong...
        </Alert>:<></>}
        {showSuccess?<Alert variant='success'>
          updated successfully
        </Alert>:<></>}
   </Row>
   <Row className='text-left'>
-  <BootstrapTable data={allProducts.products}  pagination deleteRow={true} selectRow={{mode:'checkbox'}}  options={{sortIndicator:true,afterDeleteRow:deleteItem}} cellEdit={ cellEditProp }>
+  <BootstrapTable data={allProducts.products}  
+                  pagination 
+                  deleteRow={true} 
+                  selectRow={{mode:'checkbox',bgColor:'red'}}  
+                  options={{sortIndicator:true,afterDeleteRow:deleteItem}} 
+                  search={ true } 
+                  multiColumnSearch={ true }
+                  cellEdit={ cellEditProp }>
         <TableHeaderColumn isKey dataField='id' dataSort={ true } hidden  caretRender={ getCaret } editable={false}>Product ID</TableHeaderColumn>
         <TableHeaderColumn dataField='name' dataSort  caretRender={ getCaret }>Product Name</TableHeaderColumn>
         <TableHeaderColumn dataField='price' dataSort  caretRender={ getCaret }>MRP</TableHeaderColumn>
