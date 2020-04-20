@@ -1,8 +1,10 @@
-import { db } from "../../firebaseConnect"
 
-export const getOrders=(sellerId,fun,lmt=10)=>{
-    return db.collection('sellerOrders').where('sellerId','==',sellerId).orderBy("orderedOn",'desc').limit(lmt)
-        .onSnapshot(snapshot=>{
-             fun(snapshot.docChanges());
-        })
+import { getOrderAPI } from "./laravelAPI"
+
+export const getOrders=(user,fun,lmt=10)=>{
+    getOrderAPI(user,1,lmt).then(res=>{
+        fun(res);
+    }).catch(err=>{
+        console.log(err);
+    })
 }

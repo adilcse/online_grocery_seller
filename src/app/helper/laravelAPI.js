@@ -1,4 +1,4 @@
-import { LARAVEL_API_URL } from "../AppConstant";
+import { LARAVEL_API_URL, ORDER_PER_PAGE } from "../AppConstant";
 /**
  * register user to database
  * @param {*} user firebase user auth obj
@@ -64,9 +64,42 @@ return fetch(`${LARAVEL_API_URL}/seller/updateItem/${itemId}?api_token=${token}`
 }
 
 export const deleteItemAPI=async(user,ids)=>{
-    console.log('deleting',user)
+   
     const token=await user.getIdToken();
-    console.log(token);
     return fetch(`${LARAVEL_API_URL}/seller/deleteItems?ids=${ids}&api_token=${token}`) 
     .then(res=>res.json())
+}
+/**
+ * get seller order
+ * @param {*} user user object
+ * @param {*} page current page
+ * @param {*} lmt orders per page
+ */
+export const getOrderAPI=async(user,page,lmt)=>{
+    const token=await user.getIdToken();
+    return fetch(`${LARAVEL_API_URL}/seller/getOrders/${ORDER_PER_PAGE}?page=${page}&lmt=${lmt}&api_token=${token}`) 
+    .then(res=>res.json())
+}
+
+export const orderAcceptRejectAPI=async(user,orderId,status,items)=>{
+    const token=await user.getIdToken();
+    const data=new FormData();
+    data.append('json',JSON.stringify({status:status,items:items}));
+    return fetch(`${LARAVEL_API_URL}/seller/orderAcceptReject/${orderId}?api_token=${token}`,{
+        method:'post',
+        body:data
+    }) 
+    .then(res=>res.json())
+    .catch(err=>{
+        console.log(err)
+    return false});
+}
+
+export const orderStateUpdateAPI=async(user,orderId,status)=>{
+    const token=await user.getIdToken();
+    return fetch(`${LARAVEL_API_URL}/seller/updateOrderStatus/${orderId}?status=${status}&api_token=${token}`) 
+    .then(res=>res.json())
+    .catch(err=>{
+        console.log(err)
+    return err})
 }

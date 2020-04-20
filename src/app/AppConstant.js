@@ -11,6 +11,7 @@ export const ORDER='ORDER';
 export const DETAILS='DETAILS';
 export const ACCEPT='ACCEPTED';
 export const REJECT='REJECTED';
+export const CANCELLED='CANCELLED';
 export const PENDING='PENDING';
 export const OUT_FOR_DELIVERY='OUT_FOR_DELIVERY';
 export const DELIVERED='DELIVERED';
@@ -29,3 +30,4 @@ export const PAGE_MAP='PAGE_MAP';
 export const PAGE_EDIT_ADDRESS='PAGE_EDIT_ADDRESS';
 
 export const LARAVEL_API_URL='http://localhost:8000';
+export const ORDER_PER_PAGE=10;

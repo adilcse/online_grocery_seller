@@ -1,10 +1,7 @@
 import React from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import OrderCard from "./OrderCard";
-import { useSelector } from "react-redux";
 const OrderList=(props)=>{
-  const products=useSelector(state=>state.productReducer);
-
     if(props.orders.length>0){
         return(
             <Container>
@@ -16,8 +13,8 @@ const OrderList=(props)=>{
                                     key={index} 
                                     changePage={props.changePage} 
                                     orderAcceptReject={props.orderAcceptReject} 
-                                    sellerId={props.sellerId}
-                                    products={products}/>
+                                    seller={props.seller}
+                                   />
                 })}
               </Col>
             </Row>

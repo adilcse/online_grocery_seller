@@ -13,7 +13,7 @@ const ItemCard=(props)=>{
 
 					return(
 						<Media as="li" className={item.accept?'border-bottom mt-2 pb-1':'border-bottom mt-2 pb-1 text-danger'} key={index}>
-							{props.state===PENDING?<Form.Check type="checkbox" value={item.id} checked={item.accept} onChange={props.itemStatus} label="Accept" />:<></>}
+							{props.state===PENDING?<Form.Check type="checkbox" value={item.id} checked={item.accept?true:false} onChange={props.itemStatus} label="Accept" />:<></>}
 							<img
 							width={80}
 							height={80}
@@ -25,7 +25,6 @@ const ItemCard=(props)=>{
 								<Row>
 									<Col md='6' xs='12'>
 									<h5>{item.name}</h5>
-									<h6 className='text-muted'>Catagory : {item.catagory}</h6>
 									</Col>
 									<Col md='3' xs='12'>
 

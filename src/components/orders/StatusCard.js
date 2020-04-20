@@ -1,10 +1,14 @@
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import{IoMdCheckmark,IoMdDocument,IoMdClose} from 'react-icons/io';
-import { PENDING, REJECT } from '../../app/AppConstant';
+import { PENDING, REJECT, CANCELLED } from '../../app/AppConstant';
 import { changeStatusText } from '../../app/helper/changeStatusText';
 const StatusCard=(props)=>{
     const {total}=props;
+    if(props.state===CANCELLED){
+        total.rejected_items=total.total_items;
+        total.refund_amount=total.total;
+    }
 return(
     <Container  >
         <Row className='border-bottom'>
@@ -43,15 +47,23 @@ return(
                     Sub Total 
                     </Col>
                     <Col md='4' xs='4'>
-                    ₹{total.subTotal}
+                    ₹{total.total-total.delivery_charges}
                     </Col>
                 </Row>
+                {total.refund_amount>0? <Row>
+                    <Col md='8' xs='8'>
+                    Refund amount <br/>({total.rejected_items} {total.rejected_items===1?'item':'items'})
+                    </Col>
+                    <Col md='4' xs='4'>
+                    ₹{total.refund_amount}
+                    </Col>
+                </Row>:<></>}
                 <Row className='border-bottom pb-3'>
                     <Col md='8' xs='8'>
                     Delevery Charges  
                     </Col>
                     <Col md='4' xs='4'>
-                    ₹{total.deliveryCharges} 
+                    ₹{total.delivery_charges} 
                     </Col>   
                 </Row>
                 <Row className='h5'>
@@ -59,7 +71,7 @@ return(
                     Grand Total 
                     </Col>
                     <Col md='4' xs='4' className='d-flex'>
-                    ₹{total.total}
+                    ₹{total.total-total.refund_amount+total.delivery_charges}
                     </Col>    
                 </Row>
 

@@ -6,17 +6,17 @@ import OrderDetails from '../components/orders/OrderDetails';
 import { ORDER } from '../app/AppConstant';
 import Loading from '../components/Loading';
 import { orderStatusUpdate } from '../app/helper/orderStatusUpdate';
-import { documentUpdate } from '../app/helper/documentUpdate';
+import { orderStateUpdateAPI } from '../app/helper/laravelAPI';
 import { getOrdersAction, changeOrderDetails } from '../redux/actions/orderAction';
 
 const OrdersScreen=(props)=>{
-    const sellerId=useSelector(state=>state.userLogin.userId);
+    const user=useSelector(state=>state.userLogin);
     const [currentPage,setCurrentPage]=useState(ORDER);
     const orders=useSelector(state=>state.getOrders);
     const dispatch=useDispatch();
 
       if(!orders.loaded && !orders.loading){
-        getOrdersAction(dispatch,sellerId);
+        getOrdersAction(dispatch,user.user);
       }
      
 const changePage=(page,data={})=>{
@@ -29,7 +29,13 @@ const changePage=(page,data={})=>{
  * @param {ACCEPT,REJECT} status 
  */
 const orderAcceptReject=(orderId,status,item)=>{
-  orderStatusUpdate(orderId,status,item);
+  orderStatusUpdate(user.user,orderId,status,item)
+  .then(res=>{
+    console.log(res)
+    if(res && res.status)
+      getOrdersAction(dispatch,user.user);
+     
+  })
 }
 /**
  * 
@@ -37,8 +43,18 @@ const orderAcceptReject=(orderId,status,item)=>{
  * @param {*} id order id to update
  * @param {*} data data to be updated
  */
-const orderUpdate=(col,id,data)=>{
-  documentUpdate(col,id,data)
+const orderUpdate=(id,data)=>{
+
+  orderStateUpdateAPI(user.user,id,data)
+  .then(res=>{
+    console.log(res)
+      if(res && res.status){
+        getOrdersAction(dispatch,user.user);
+        changePage(ORDER);
+      }
+    }
+  )
+  //documentUpdate(col,id,data)
 }
   if(orders.loading){
    return <Loading size={100}/>
@@ -47,7 +63,7 @@ const orderUpdate=(col,id,data)=>{
       <Container>
           <Row>
             {currentPage===ORDER?  
-              <OrdersList orders={orders.orders} changePage={changePage} orderAcceptReject={orderAcceptReject} sellerId={sellerId}/>
+              <OrdersList orders={orders.orders} changePage={changePage} orderAcceptReject={orderAcceptReject} seller={user}/>
               :<OrderDetails changePage={changePage} details={orders.details} orderUpdate={orderUpdate}></OrderDetails>}
           </Row>
       </Container>
