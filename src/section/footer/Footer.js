@@ -47,10 +47,10 @@ const Footer=()=>{
         description:'Become a Partner'
     },
     {
-        title: 'Sell with us',
-        url: 'https://mygrocerystore199.web.app',
+        title: 'Purchase from us',
+        url: 'https://my-grocery-ap.web.app',
         openExternal:true,
-        description:'Become a seller'
+        description:'Best price'
     }
     ]
     

@@ -1,5 +1,5 @@
 import React from "react";
-import { Row,  Media, Col, Form } from "react-bootstrap";
+import { Row,  Media, Col, Form, Alert } from "react-bootstrap";
 import { PENDING } from "../../app/AppConstant";
 
 const ItemCard=(props)=>{
@@ -29,6 +29,7 @@ const ItemCard=(props)=>{
 									</Col>
 									<Col md='3' xs='12'>
 									<h6>{item.quantity} ({item.quantity>1?'items':'item'})</h6>
+									{item.stock<=5?<Alert variant='danger'>Few stock left </Alert>:<></>}
 									</Col>
 								</Row>
 							</Media.Body>

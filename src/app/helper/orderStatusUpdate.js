@@ -5,11 +5,17 @@ import {documentUpdate} from './documentUpdate';
     let count=0,tot=0;
     const products=[];
     const Nitem=item.map(el=>{
-        if(!el.accept ||!status || (el.stock - el.quantity) <=0){
+        if(!el.accept ||!status){
             count++;
             tot=tot+(el.price*el.quantity);
         } else {
-            products.push({id:el.id,update:{stock:el.stock - el.quantity}});
+            if((el.stock - el.quantity) <= 0) {
+                el.accept = false;
+                count++;
+                tot=tot+(el.price*el.quantity);
+            } else {
+                products.push({id:el.id,update:{stock:el.stock - el.quantity}});
+            }
         }
         return {
             id:el.id,

@@ -56,7 +56,8 @@ const deleteItem=(items)=>{
         lastPage: 'Last', // Last page button text
         paginationPosition: 'top',  // default is bottom, top and both is all available
         sortIndicator:true,
-        afterDeleteRow:deleteItem
+        afterDeleteRow:deleteItem,
+        deleteText: 'Delete items',
       };
 
       const onAfterSaveCell=(row, cellName, cellValue)=> {
@@ -90,7 +91,7 @@ const deleteItem=(items)=>{
             return true;
           break;
           case 'discount':
-            if(!isNaN(cellValue) && parseInt(cellValue)>0)
+            if(!isNaN(cellValue) && parseInt(cellValue)>0 && parseInt(cellValue) < 100)
             return true;
           break;
           default:
@@ -104,6 +105,21 @@ const deleteItem=(items)=>{
         beforeSaveCell: onBeforeSaveCell, // a hook for before saving cell
         afterSaveCell: onAfterSaveCell  // a hook for after saving cell
       };
+      const priceFormatter=(cell,row,type='none')=>{
+        switch(type){
+          case 'mrp':
+            return `₹ ${cell}`;
+          case 'discount':
+            return `${cell} %`;
+          case 'price':
+            return `₹ ${cell}`;
+          case 'stock':
+            return (parseInt(cell)<=5)? `<div class="text-danger"> ${cell} </div> (out of stock soon)`: cell;
+          default:
+            return cell;
+        }
+      }
+
       if(allProducts.loading)
         return(<Loading size={100}/>);
      else if(allProducts.loaded && !allProducts.loading)
@@ -115,21 +131,21 @@ return(
         </h2>
         </Row>
         <Row>
-       {showError?<Alert variant='danger'>
+       {showError?<Alert variant='danger' dismissible onClose={()=>setShowError(false)}>
          Error getting data
        </Alert>:<></>}
-       {showSuccess?<Alert variant='success'>
+       {showSuccess?<Alert variant='success' dismissible onClose={()=>setShowSuccess(false)}>
          updated successfully
        </Alert>:<></>}
   </Row>
   <Row className='text-left mb-5'>
   <BootstrapTable data={allProducts.products}  pagination deleteRow={true} selectRow={{mode:'checkbox'}}  options={options} cellEdit={ cellEditProp }>
         <TableHeaderColumn isKey dataField='id' dataSort={ true } hidden  caretRender={ getCaret } editable={false}>Product ID</TableHeaderColumn>
-        <TableHeaderColumn dataField='name' dataSort  caretRender={ getCaret }>Product Name</TableHeaderColumn>
-        <TableHeaderColumn dataField='price' dataSort  caretRender={ getCaret }>MRP</TableHeaderColumn>
-        <TableHeaderColumn dataField='discount' dataSort  caretRender={ getCaret } >Discount %</TableHeaderColumn>
-        <TableHeaderColumn dataField='sellingPrice' dataSort  caretRender={ getCaret } editable={false}>Selling price</TableHeaderColumn>
-        <TableHeaderColumn dataField='stock' dataSort  caretRender={ getCaret }>Current Stock</TableHeaderColumn>
+        <TableHeaderColumn dataField='name' dataSort  caretRender={ getCaret } filter={ { type: 'TextFilter' } } width='400'>Product Name</TableHeaderColumn>
+        <TableHeaderColumn dataField='price' dataSort  dataFormat={ priceFormatter } formatExtraData={ 'mrp' }  caretRender={ getCaret }>MRP</TableHeaderColumn>
+        <TableHeaderColumn dataField='discount' dataSort dataFormat={ priceFormatter } formatExtraData={ 'discount' }  caretRender={ getCaret } >Discount %</TableHeaderColumn>
+        <TableHeaderColumn dataField='sellingPrice' dataSort dataFormat={ priceFormatter } formatExtraData={ 'price' }  caretRender={ getCaret } editable={false}>Selling price</TableHeaderColumn>
+        <TableHeaderColumn dataField='stock' dataSort dataFormat={ priceFormatter } formatExtraData={ 'stock' }  caretRender={ getCaret }>Current Stock</TableHeaderColumn>
   </BootstrapTable>
   </Row>
     </Container>

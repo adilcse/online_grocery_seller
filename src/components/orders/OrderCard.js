@@ -9,7 +9,7 @@ import { arrayMergeByObject } from '../../app/helper/arrayMergeByObject';
 import { DETAILS } from '../../app/AppConstant';
 import { useDispatch } from 'react-redux';
 import { getSellerItemAction } from '../../redux/actions/productAction';
-import { productReducer } from '../../redux/reducers/productReducer';
+
 const OrderCard=(props)=>{
     const{order}=props;
     const [loaded,setLoaded]=useState(false);
@@ -17,6 +17,7 @@ const OrderCard=(props)=>{
     const orderStatus=order.status;
     const [selectedItems,setSelectedItems]=useState(order.items.filter(el=>el.accept).length);
     const [showError,setShowError]=useState(false);
+    const [outOfStock,setOutOfStock]=useState(false);
     const {products}=props;
     const dispatch=useDispatch();
     React.useEffect(() => { 
@@ -36,7 +37,15 @@ const OrderCard=(props)=>{
                 setShowError(true);
                 return;   
         }
+        if(status) {
+            item.forEach(element => {
+                if((element.stock - element.quantity) <= 0){
+                    setOutOfStock(true);
+                }
+            });
+        }
         setShowError(false);
+
         props.orderAcceptReject(order.id,status,item);
     }
     const updateItem=(it)=>{
@@ -60,6 +69,7 @@ const OrderCard=(props)=>{
         return (
             <>
             {showError?<Alert variant='danger'>Please select Atleast one item</Alert>:<></>}
+            {outOfStock?<Alert variant='danger'>Some item is currently out of stock</Alert>:<></>}
             <CardDeck className='rounded mb-3'>
                
             <Card>
