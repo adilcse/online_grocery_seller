@@ -31,7 +31,11 @@ export const productReducer=(state=initialProducts,action={})=>{
         case GET_SELLER_ITEMS_PENDING:
             return{...state,loaded:false,loading:true,error:false}
         case GET_SELLER_ITEMS_SUCCESS:
-            return{...state,loaded:true,loading:false,products:action.payload,error:false}
+            const products=action.payload.map(item=>{
+                item.sellingPrice=Math.floor(parseInt(item.price)*(1-item.discount/100));
+                return item;
+            })
+            return{...state,loaded:true,loading:false,products:products,error:false}
         case GET_SELLER_ITEMS_FAILED:
             return{...state,loaded:true,loading:false,error:true}
         default:

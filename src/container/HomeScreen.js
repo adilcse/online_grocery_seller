@@ -38,15 +38,38 @@ const deleteItem=(items)=>{
             <IoIosArrowUp/>
         );
       }
+      const options = {
+        page: 1,  // which page you want to show as default
+        sizePerPageList: [ {
+          text: '5', value: 5
+        }, {
+          text: '10', value: 10
+        }, {
+          text: 'All', value: allProducts.products.length
+        } ], // you can change the dropdown list for size per page
+        sizePerPage: 5,  // which size per page you want to locate as default
+        pageStartIndex: 1, // where to start counting the pages
+        paginationSize: 3,  // the pagination bar size.
+        prePage: 'Prev', // Previous page button text
+        nextPage: 'Next', // Next page button text
+        firstPage: 'First', // First page button text
+        lastPage: 'Last', // Last page button text
+        paginationPosition: 'top',  // default is bottom, top and both is all available
+        sortIndicator:true,
+        afterDeleteRow:deleteItem
+      };
+
       const onAfterSaveCell=(row, cellName, cellValue)=> {
+      row.sellingPrice = Math.floor(parseInt(row.price)*(1-row.discount/100));         
       updateItemById(row.id,cellName,cellValue).then(res=>{
         if(res){
           setShowSuccess(true);
           setShowError(false)
         }
-         else{
-           setShowError(true)
-         setShowSuccess(false) }
+        else{
+          setShowError(true)
+          setShowSuccess(false) 
+        }
       });
       }
       
@@ -99,12 +122,13 @@ return(
          updated successfully
        </Alert>:<></>}
   </Row>
-  <Row className='text-left'>
-  <BootstrapTable data={allProducts.products}  pagination deleteRow={true} selectRow={{mode:'checkbox'}}  options={{sortIndicator:true,afterDeleteRow:deleteItem}} cellEdit={ cellEditProp }>
+  <Row className='text-left mb-5'>
+  <BootstrapTable data={allProducts.products}  pagination deleteRow={true} selectRow={{mode:'checkbox'}}  options={options} cellEdit={ cellEditProp }>
         <TableHeaderColumn isKey dataField='id' dataSort={ true } hidden  caretRender={ getCaret } editable={false}>Product ID</TableHeaderColumn>
         <TableHeaderColumn dataField='name' dataSort  caretRender={ getCaret }>Product Name</TableHeaderColumn>
         <TableHeaderColumn dataField='price' dataSort  caretRender={ getCaret }>MRP</TableHeaderColumn>
         <TableHeaderColumn dataField='discount' dataSort  caretRender={ getCaret } >Discount %</TableHeaderColumn>
+        <TableHeaderColumn dataField='sellingPrice' dataSort  caretRender={ getCaret } editable={false}>Selling price</TableHeaderColumn>
         <TableHeaderColumn dataField='stock' dataSort  caretRender={ getCaret }>Current Stock</TableHeaderColumn>
   </BootstrapTable>
   </Row>

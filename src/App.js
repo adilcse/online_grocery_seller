@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Loading from './components/Loading';
 import LoginScreen from './container/LoginScreen';
+import Footer from './section/footer/Footer';
 
 const SellerUserRoute=lazy(()=>import('./app/routes/SellerUserRoute'));
 
@@ -26,9 +27,11 @@ function App() {
   <Router>
       <Suspense fallback={<Loading size={100}/>}>
        <SellerUserRoute/>
+       <Footer/>
       </Suspense>
     </Router>
-  );}
+  )
+}
   else{
     return(
       <Router>
