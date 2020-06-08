@@ -1,6 +1,6 @@
 import { ACCEPT, REJECT } from "../AppConstant";
 import {documentUpdate} from './documentUpdate';
- export const orderStatusUpdate=(sellerOrderId,status,item={})=>{
+export const orderStatusUpdate=(sellerOrderId,status,item={})=>{
 
     let count=0,tot=0;
     const products=[];
@@ -14,7 +14,7 @@ import {documentUpdate} from './documentUpdate';
                 count++;
                 tot=tot+(el.price*el.quantity);
             } else {
-                products.push({id:el.id,update:{stock:el.stock - el.quantity}});
+                products.push({id:el.id,update:{stock:parseInt(el.stock - el.quantity)}});
             }
         }
         return {

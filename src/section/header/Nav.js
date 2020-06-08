@@ -37,16 +37,16 @@ const LogoutButton=()=>{
     <ul className="navbar-nav w-100 ">
      
       <li className="nav-item">
-        <NavLink className="nav-link" to="/home">Dashbord <IoIosHome/></NavLink>
+        <NavLink className="nav-link" activeClassName="bg-info text-white" to="/home">Dashbord <IoIosHome/></NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className="nav-link" to="/orders">Orders<IoIosList/></NavLink>
+        <NavLink className="nav-link" activeClassName="bg-info text-white" to="/orders">Orders<IoIosList/></NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className="nav-link" to="/additem">Add Item <FaPlus/></NavLink>
+        <NavLink className="nav-link" activeClassName="bg-info text-white" to="/additem">Add Item <FaPlus/></NavLink>
       </li>
       <li className="nav-item align-self-center">
-        <h5>Welcome {user.name}</h5>
+        <h5 className="mb-0">Welcome {user.name}</h5>
       </li>
       <LogoutButton />      
     </ul>
