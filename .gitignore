@@ -11,7 +11,8 @@
 /src/firebaseConfig
 # production
 /build
-
+.dockerignore
+Dockerfile
 .firebase/*
 .env
 # misc
@@ -24,3 +25,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.firebase/hosting.YnVpbGQ.cache
