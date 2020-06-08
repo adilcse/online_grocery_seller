@@ -37,15 +37,15 @@ const LogoutButton=()=>{
     <ul className="navbar-nav w-100 ">
      
       <li className="nav-item">
-        <NavLink className="nav-link" activeClassName="bg-info text-white" to="/home">Dashbord <IoIosHome/></NavLink>
+        <NavLink className="nav-link  mx-2" activeClassName="bg-info text-white" to="/home">Dashbord <IoIosHome/></NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className="nav-link" activeClassName="bg-info text-white" to="/orders">Orders<IoIosList/></NavLink>
+        <NavLink className="nav-link  mx-2" activeClassName="bg-info text-white" to="/orders">Orders<IoIosList/></NavLink>
       </li>
       <li className="nav-item">
-        <NavLink className="nav-link" activeClassName="bg-info text-white" to="/additem">Add Item <FaPlus/></NavLink>
+        <NavLink className="nav-link  mx-2" activeClassName="bg-info text-white" to="/additem">Add Item <FaPlus/></NavLink>
       </li>
-      <li className="nav-item align-self-center">
+      <li className="nav-item align-self-center mx-2">
         <h5 className="mb-0">Welcome {user.name}</h5>
       </li>
       <LogoutButton />      

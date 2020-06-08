@@ -4,6 +4,7 @@ import './EditAddress.css'
 import { Form, Col, Button } from 'react-bootstrap';
 import {INPUT_PIN, INPUT_LANDMARK, INPUT_LOCALITY, INPUT_ADDRESS, INPUT_CITY, INPUT_STATE, INPUT_ALTERNATE} from '../app/AppConstant';
 import ErrorMessage from '../app/helper/ErrorMessage';
+import { indianStates } from '../app/helper/indianStates';
 
 //keeps track of thee field touched
 let touched={
@@ -34,7 +35,8 @@ const regex={
   locality:/^[0-9a-zA-Z\-, ]{3,}$/,
   city:/^[a-zA-Z\-, ]{3,}$/,
   alternate:/^[ ]{0}|[0-9]{10}$/,  
-  landmark:/^[a-zA-Z0-9\- ]{0,}$/
+  landmark:/^[a-zA-Z0-9\- ]{0,}$/,
+  state:/^[a-zA-Z0-9\- ]{0,}$/
 }
 
 const EnterAddress=(props)=>{
@@ -51,27 +53,27 @@ const EnterAddress=(props)=>{
   const [alternate,setAlternate]=useState(fullAddress.alternate?fullAddress.alternate:' ');
   const [updated,setUpdated]=useState(true);
   const [changed,setChanged]=useState(false);
-  const [error,showError]=useState(false)
+  const [error,showError]=useState(false);
+  const [touchedState,setTouchedState]=useState(touched);
+  const [errorState,setErrorState]=useState(errors);
+
   //when submit button is clicked it handles
     const handleSubmit=()=>{
       let correct=true;
-     Object.keys(regex).forEach((key)=>{
-   
-       if(!touched[key] && fullAddress){
-       
-        if(!validate(key,fullAddress[key]))
+      Object.keys(regex).forEach((key)=>{
+        if(!touchedState[key] && fullAddress){
+          if(validate(key,fullAddress[key]))
             correct=true;
           else
             correct=false;
         }else{
-          touched[key]=true;
-          if(errors[key]){
+          setTouchedState({...touchedState,[key]:true});
+          if(errorState[key]){
             correct=false;
           }
         }
-       
-     });
-     if(correct){
+      });
+      if(correct){
         saveAddress();
         setUpdated(!updated);
       }
@@ -98,21 +100,10 @@ const EnterAddress=(props)=>{
       props.setValidAddress(true,fullAddress);
     }
     const validate=(id,val,setFun=()=>true)=>{
-    touched[id]=true;
-    if(id==='state'){
-      if(val!==1)
-      errors[id]=false;
-    else
-      errors[id]=true;
-    }else{
-      if(regex[id].test(val))
-        errors[id]=false;
-    else
-      errors[id]=true;
-
-    }
-    setFun(val);
-    return errors[id];
+      const error=!regex[id].test(val);
+      setErrorState({...errorState,[id]:error})
+      setFun(val);
+      return !error;
     }
    
     //when user types something it checks for input validation
@@ -120,23 +111,28 @@ const EnterAddress=(props)=>{
       let val=element.target.value;
       switch(element.target.id){
         case INPUT_PIN:
+          setTouchedState({...touchedState,pin:true});
           validate('pin',val,setPin)
           break;  
         case INPUT_LOCALITY:
+          setTouchedState({...touchedState,locality:true});
           validate('locality',val,setLocality)
           break;    
         case INPUT_ADDRESS:
+          setTouchedState({...touchedState,address:true});
           validate('address',val,setAddress)
           break;  
         case INPUT_CITY:
+          setTouchedState({...touchedState,city:true});
           validate('city',val,setCity)
           break;            
         case INPUT_STATE:
+          setTouchedState({...touchedState,state:true});
           validate('state',val,setState)
           break;         
         case INPUT_LANDMARK:
-          touched.landmark=true;
-          errors.landmark=false;
+          setTouchedState({...touchedState,landmark:true});
+          setErrorState({...errorState,landmark:false});
             setLandmark(val);
           break;
         case INPUT_ALTERNATE:
@@ -144,7 +140,6 @@ const EnterAddress=(props)=>{
           break;   
           default:
             return;            
-          
       }
     }
     if(!changed && fullAddress){
@@ -164,6 +159,22 @@ return(
     <div>
       <Form>
           <Form.Row>
+          <Form.Group as={Col} md='12' controlId={INPUT_ADDRESS}>
+            <Form.Label>Address (Area and Street)</Form.Label>
+            <Form.Control 
+              as="textarea" 
+              rows="3"
+              value={address}
+              onChange={handleChange}
+              isValid={touchedState.address && !errorState.address}
+              isInvalid={touchedState.address && errorState.address}
+              />
+            <Form.Control.Feedback type="invalid">
+              Please Enter Your Locality
+            </Form.Control.Feedback>
+        </Form.Group>
+        </Form.Row>
+        <Form.Row>
             <Form.Group as={Col} md="6" controlId={INPUT_PIN}>
               <Form.Label>Pincode</Form.Label>
               <Form.Control
@@ -172,49 +183,30 @@ return(
                 placeholder='PIN'
                 value={pin}
                 onChange={handleChange}
-                isValid={touched.pin && !errors.pin}
-                isInvalid={touched.pin && errors.pin}
+                isValid={touchedState.pin && !errorState.pin}
+                isInvalid={touchedState.pin && errorState.pin}
                 maxLength={6}
+                required
               />
               <Form.Control.Feedback type='invalid'>Please Enter correct pin code</Form.Control.Feedback>
             </Form.Group>
-          
             <Form.Group as={Col} md="6" controlId={INPUT_LOCALITY}>
               <Form.Label>Locality</Form.Label>
-              
             <Form.Control
               type="text"
               placeholder="Locality"
               aria-describedby="inputGroupPrepend"
               value={locality}
               onChange={handleChange}
-              isValid={touched.locality && !errors.locality}
-              isInvalid={touched.locality && errors.locality}
+              isValid={touchedState.locality && !errorState.locality}
+              isInvalid={touchedState.locality && errorState.locality}
               required
             />
             <Form.Control.Feedback type="invalid">
               Please Enter Your Locality
             </Form.Control.Feedback>
-         
             </Form.Group>
-           
           </Form.Row>
-          <Form.Row>
-          <Form.Group as={Col} md='12' controlId={INPUT_ADDRESS}>
-            <Form.Label>Address (Area and Street)</Form.Label>
-            <Form.Control 
-              as="textarea" 
-              rows="3"
-              value={address}
-              onChange={handleChange}
-              isValid={touched.address && !errors.address}
-              isInvalid={touched.address && errors.address}
-               />
-            <Form.Control.Feedback type="invalid">
-              Please Enter Your Locality
-            </Form.Control.Feedback>
-        </Form.Group>
-        </Form.Row>
         <Form.Row>
         <Form.Group as={Col} md="6" controlId={INPUT_CITY}>
             <Form.Label>City/District/Town</Form.Label>
@@ -223,8 +215,8 @@ return(
               placeholder="City"
               value={city}
               onChange={handleChange}
-              isValid={touched.city && !errors.city}
-              isInvalid={touched.city && errors.city}
+              isValid={touchedState.city && !errorState.city}
+              isInvalid={touchedState.city && errorState.city}
               
             />
             <Form.Control.Feedback type="invalid">
@@ -236,45 +228,14 @@ return(
             <Form.Control as="select" 
               value={state}
               onChange={handleChange}
-              isValid={touched.state && !errors.state}
-              isInvalid={touched.state && errors.state}
+              isValid={touchedState.state && !errorState.state}
+              isInvalid={touchedState.state && errorState.state}
               >
-              <option value="Andhra Pradesh">Andhra Pradesh</option>
-              <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-              <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-              <option value="Assam">Assam</option>
-              <option value="Bihar">Bihar</option>
-              <option value="Chandigarh">Chandigarh</option>
-              <option value="Chhattisgarh">Chhattisgarh</option>
-              <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
-              <option value="Daman and Diu">Daman and Diu</option>
-              <option value="Delhi">Delhi</option>
-              <option value="Lakshadweep">Lakshadweep</option>
-              <option value="Puducherry">Puducherry</option>
-              <option value="Goa">Goa</option>
-              <option value="Gujarat">Gujarat</option>
-              <option value="Haryana">Haryana</option>
-              <option value="Himachal Pradesh">Himachal Pradesh</option>
-              <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-              <option value="Jharkhand">Jharkhand</option>
-              <option value="Karnataka">Karnataka</option>
-              <option value="Kerala">Kerala</option>
-              <option value="Madhya Pradesh">Madhya Pradesh</option>
-              <option value="Maharashtra">Maharashtra</option>
-              <option value="Manipur">Manipur</option>
-              <option value="Meghalaya">Meghalaya</option>
-              <option value="Mizoram">Mizoram</option>
-              <option value="Nagaland">Nagaland</option>
-              <option value="Odisha">Odisha</option>
-              <option value="Punjab">Punjab</option>
-              <option value="Rajasthan">Rajasthan</option>
-              <option value="Sikkim">Sikkim</option>
-              <option value="Tamil Nadu">Tamil Nadu</option>
-              <option value="Telangana">Telangana</option>
-              <option value="Tripura">Tripura</option>
-              <option value="Uttar Pradesh">Uttar Pradesh</option>
-              <option value="Uttarakhand">Uttarakhand</option>
-              <option value="West Bengal">West Bengal</option>
+              {
+                indianStates.map((name,i)=>
+                  <option key={i} value={name}>{name}</option>
+                )
+              }
             </Form.Control>
             <Form.Control.Feedback type="invalid">
               Please Enter Your Locality
@@ -290,8 +251,8 @@ return(
                 placeholder='Landmark (Optional)'
                 value={landmark}
                 onChange={handleChange}
-                isValid={touched.landmark && !errors.landmark}
-                isInvalid={touched.landmark && errors.landmark}
+                isValid={touchedState.landmark && !errorState.landmark}
+                isInvalid={touchedState.landmark && errorState.landmark}
                 maxLength={20}
               />
               <Form.Control.Feedback type='invalid'>Enter valid landmark</Form.Control.Feedback>
@@ -306,8 +267,8 @@ return(
               aria-describedby="inputGroupPrepend"
               value={alternate}
               onChange={handleChange}
-              isValid={touched.alternate && !errors.alternate}
-              isInvalid={touched.alternate && errors.alternate}
+              isValid={touchedState.alternate && !errorState.alternate}
+              isInvalid={touchedState.alternate && errorState.alternate}
               maxLength={10}
             
             />

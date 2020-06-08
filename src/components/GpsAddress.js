@@ -5,6 +5,9 @@ import { getAddressByLatLng } from '../app/helper/getAddressByLatLng';
 import { PAGE_MAP, PAGE_EDIT_ADDRESS } from '../app/AppConstant';
 import EnterAddress from './EnterAddress';
 import  './EditAddress.css';
+import { IoMdLocate } from "react-icons/io";
+import { GoLocation } from "react-icons/go";
+import { MdEdit } from "react-icons/md";
 const GpsAddress=(props)=>{
     const [marker,setMarker]=useState(false);
     const [center,setCenter]=useState({ lat: 20.3423744, lng: 85.8161152});
@@ -157,8 +160,8 @@ const GpsAddress=(props)=>{
        
         <h2>{myAddress}</h2>
         <div className='mb-4'>
-        <Button variant='info' onClick={()=>props.setAddress({...fullAddress,latLng:marker})}> Select this Location</Button>
-        <Button variant='warning' className='ml-3' onClick={()=>setPage(PAGE_EDIT_ADDRESS)}>Edit Address</Button>
+        <Button variant='info' onClick={()=>props.setAddress({...fullAddress,latLng:marker})}> Select this Location <GoLocation/></Button>
+        <Button variant='warning' className='ml-3' onClick={()=>setPage(PAGE_EDIT_ADDRESS)}>Edit Address <MdEdit/></Button>
         </div>
        
     </div>
@@ -196,7 +199,7 @@ const GpsAddress=(props)=>{
     return(
         <div className='text-center'>
             <Button className='mt-4 mb-3'onClick={()=>getLocation(false)}>
-                Get My Location
+                Get My Location <IoMdLocate/>
             </Button>
             <div>
                 {myAddress?<ViewAddress/>:<></>}
@@ -214,10 +217,7 @@ const GpsAddress=(props)=>{
             panControl={true}
             onReady={fetchPlaces}
             >
-                
                 {MyLocation()}
-
-                {/* <Polyline path={path} options={{ strokeColor: "#FF0000 " }} /> */}
                 </Map>
                 </div>
             

@@ -15,10 +15,9 @@ const [showSuccess,setShowSuccess]=useState(false);
 const allProducts=useSelector(state=>state.productReducer);
 const dispatch=useDispatch();
 if(!allProducts.loaded && !allProducts.loading){
-getSellerItemAction(dispatch,sellerId);
-}
+    getSellerItemAction(dispatch,sellerId);
+  }
 const deleteItem=(items)=>{
-  console.log(items)
   deleteSellerItems(sellerId,items).then(()=>{
     showSuccess(true);
   });
@@ -141,7 +140,7 @@ return(
   <Row className='text-left mb-5'>
   <BootstrapTable data={allProducts.products}  pagination deleteRow={true} selectRow={{mode:'checkbox'}}  options={options} cellEdit={ cellEditProp }>
         <TableHeaderColumn isKey dataField='id' dataSort={ true } hidden  caretRender={ getCaret } editable={false}>Product ID</TableHeaderColumn>
-        <TableHeaderColumn dataField='name' dataSort  caretRender={ getCaret } filter={ { type: 'TextFilter' } } width='400'>Product Name</TableHeaderColumn>
+        <TableHeaderColumn dataField='name' dataSort  caretRender={ getCaret } filter={ { type: 'TextFilter' } } width='320'>Product Name</TableHeaderColumn>
         <TableHeaderColumn dataField='price' dataSort  dataFormat={ priceFormatter } formatExtraData={ 'mrp' }  caretRender={ getCaret }>MRP</TableHeaderColumn>
         <TableHeaderColumn dataField='discount' dataSort dataFormat={ priceFormatter } formatExtraData={ 'discount' }  caretRender={ getCaret } >Discount %</TableHeaderColumn>
         <TableHeaderColumn dataField='sellingPrice' dataSort dataFormat={ priceFormatter } formatExtraData={ 'price' }  caretRender={ getCaret } editable={false}>Selling price</TableHeaderColumn>

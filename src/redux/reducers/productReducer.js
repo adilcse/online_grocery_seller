@@ -1,4 +1,4 @@
-import { GET_CATAGORIES_PENDING, GET_CATAGORIES_SUCCESS, GET_CATAGORIES_FAILED, GET_SELLER_ITEMS_PENDING, GET_SELLER_ITEMS_SUCCESS, GET_SELLER_ITEMS_FAILED } from "../../app/ActionConstant"
+import { GET_CATAGORIES_PENDING, GET_CATAGORIES_SUCCESS, GET_CATAGORIES_FAILED, GET_SELLER_ITEMS_PENDING, GET_SELLER_ITEMS_SUCCESS, GET_SELLER_ITEMS_FAILED, LOGOUT_USER_SUCCESS } from "../../app/ActionConstant"
 
 const initialState={
 loaded:false,
@@ -38,6 +38,8 @@ export const productReducer=(state=initialProducts,action={})=>{
             return{...state,loaded:true,loading:false,products:products,error:false}
         case GET_SELLER_ITEMS_FAILED:
             return{...state,loaded:true,loading:false,error:true}
+        case LOGOUT_USER_SUCCESS:
+            return initialProducts
         default:
             return state
     }

@@ -1,5 +1,4 @@
 import { db } from "../../firebaseConnect"
-import { getFromDb } from "./getFromDb";
 
 export const getItemFromDb=(id)=>{
 var docRef = db.collection("products").doc(id);

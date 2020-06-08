@@ -2,6 +2,7 @@ import { LOGOUT_USER_PENDING, LOGOUT_USER_SUCCESS,LOGOUT_USER_FAILED, LOGIN_USER
 import {firebase, db } from '../../firebaseConnect';
 import {  SELLER_VERIFICATION_PENDING, USER_TYPE_SELLER } from "../../app/AppConstant";
 import * as geofirex from 'geofirex';
+import { getSellerItemAction } from "./productAction";
 const geo = geofirex.init(firebase);
 /**
  * Tries to signin with given email and password
@@ -78,8 +79,10 @@ export const LoginStatus=async(dispatch)=>{
 export const ValidateUser=async(dispatch,user,by='email')=>{
   db.collection("seller").doc(user.uid).get().then(function(doc) {
     if (doc.exists) {
-     if(doc.data().userType===USER_TYPE_SELLER)
-          dispatch({type:LOGIN_USER_SUCCESS,payload:{...user,...doc.data()}});
+     if(doc.data().userType===USER_TYPE_SELLER){
+        dispatch({type:LOGIN_USER_SUCCESS,payload:{...user,...doc.data()}});
+        getSellerItemAction(dispatch,doc.id);
+      }
       else{
         dispatch({type:LOGIN_USER_FAILED,payload:{code:'Seller Activation pending. please contact admin.'}});
         Logout(dispatch);
